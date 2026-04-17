@@ -1,0 +1,189 @@
+import { ArrowRight, Users } from 'lucide-react';
+
+export default function BalanceList({ balances, settlements }) {
+  const sortedBalances = [...balances].sort(
+    (firstBalance, secondBalance) =>
+      secondBalance.balance - firstBalance.balance,
+  );
+
+  const totalPaidAmount = balances.reduce(
+    (sum, item) => sum + item.totalPaid,
+    0,
+  );
+
+  const participantCount = balances.length;
+
+  const gap = 2;
+  const size = 150;
+  const strokeWidth = 16;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+
+  const circleSegments = sortedBalances.map((item, index, array) => {
+    const rawLength =
+      totalPaidAmount > 0
+        ? (item.totalPaid / totalPaidAmount) * circumference
+        : 0;
+
+    const segmentLength = Math.max(rawLength - gap, 0);
+
+    const offset = array.slice(0, index).reduce((sum, currentItem) => {
+      const currentSegmentLength =
+        totalPaidAmount > 0
+          ? (currentItem.totalPaid / totalPaidAmount) * circumference
+          : 0;
+
+      return sum + currentSegmentLength;
+    }, 0);
+
+    return {
+      ...item,
+      segmentLength,
+      offset,
+    };
+  });
+
+  return (
+    <div>
+      <h2 className='mb-1.5 ms-1 text-lg font-semibold text-zinc-700'>
+        Balance
+      </h2>
+
+      <section className='rounded-2xl border border-zinc-200/90 bg-white/90 px-5 py-5 shadow-sm'>
+        <div>
+          <div className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-600'>
+            <Users className='h-4 w-4 text-zinc-600' />
+            <span>{participantCount}</span>
+            <span className='text-zinc-700'>·</span>
+            <span>{Number(totalPaidAmount.toFixed(2))}€</span>
+          </div>
+        </div>
+
+        <div className='mt-7 flex flex-col items-center'>
+          <div className='relative flex items-center justify-center'>
+            <svg
+              width={size}
+              height={size}
+              viewBox={`0 0 ${size} ${size}`}
+              className='-rotate-90'
+            >
+              <circle
+                cx={size / 2}
+                cy={size / 2}
+                r={radius}
+                fill='none'
+                stroke='#e4e4e7'
+                strokeWidth={strokeWidth}
+              />
+
+              {circleSegments.map(
+                ({ participant, segmentLength, offset }, index) => (
+                  <circle
+                    key={participant.id ?? index}
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    fill='none'
+                    stroke={participant.color}
+                    strokeWidth={strokeWidth}
+                    strokeLinecap='butt'
+                    strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
+                    strokeDashoffset={-offset}
+                  />
+                ),
+              )}
+            </svg>
+
+            <div className='absolute inset-0 flex flex-col items-center justify-center'>
+              <span className='text-2xl font-semibold tracking-tight text-zinc-900'>
+                {Number(totalPaidAmount.toFixed(2))}€
+              </span>
+              <span className='text-sm uppercase tracking-wide text-zinc-500'>
+                total
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className='mt-7 space-y-3'>
+          {sortedBalances.map(({ participant, balance, totalPaid }) => (
+            <div
+              key={participant.id}
+              className='flex items-start justify-between gap-4 rounded-xl px-1 py-1'
+            >
+              <div className='flex min-w-0 items-center gap-3'>
+                <span
+                  className='h-5 w-1.5 shrink-0 rounded-full'
+                  style={{ backgroundColor: participant.color }}
+                />
+
+                <span className='truncate text-base text-zinc-700'>
+                  {participant.name}
+                </span>
+              </div>
+
+              <div className='text-right'>
+                <p
+                  className={`text-base font-semibold ${
+                    balance >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
+                  {balance > 0 ? '+' : ''}
+                  {Number(balance.toFixed(2))}€
+                </p>
+
+                <p className='mt-0.5 text-xs text-zinc-400'>
+                  paid {Math.round(totalPaid)}€
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {settlements.length > 0 && (
+        <div className='mt-6'>
+          <h2 className='mb-1.5 ms-1 text-lg font-semibold text-zinc-900'>
+            Suggested payments
+          </h2>
+
+          <section className='rounded-2xl border border-zinc-200/90 bg-white px-5 py-5 shadow-sm'>
+            <div className='space-y-3'>
+              {settlements.map((settlement, index) => (
+                <div
+                  key={index}
+                  className='flex items-center justify-between gap-3 rounded-xl border border-zinc-300 bg-white px-3 py-3'
+                >
+                  <div className='flex min-w-0 items-center gap-3'>
+                    <span
+                      className='h-5 w-1.5 shrink-0 rounded-full'
+                      style={{ backgroundColor: settlement.from.color }}
+                    />
+
+                    <div className='min-w-0'>
+                      <p className='flex items-center gap-1.5 text-sm text-zinc-600'>
+                        <span className='font-semibold text-zinc-800'>
+                          {settlement.from.name}
+                        </span>
+
+                        <ArrowRight className='h-4 w-4 text-zinc-400' />
+
+                        <span className='font-semibold text-zinc-800'>
+                          {settlement.to.name}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className='shrink-0 text-sm font-semibold text-zinc-900'>
+                    {settlement.amount.toFixed(2)}€
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
+    </div>
+  );
+}
