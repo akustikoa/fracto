@@ -3,14 +3,14 @@ export function calculateSettlements(balances) {
     .filter(({ balance }) => balance > 0)
     .map(({ participant, balance }) => ({
       participant,
-      amount: balance,
+      amountCents: Math.round(balance * 100),
     }));
 
   const debtors = balances
     .filter(({ balance }) => balance < 0)
     .map(({ participant, balance }) => ({
       participant,
-      amount: Math.abs(balance),
+      amountCents: Math.abs(Math.round(balance * 100)),
     }));
 
   const settlements = [];
@@ -22,22 +22,22 @@ export function calculateSettlements(balances) {
     const creditor = creditors[creditorIndex];
     const debtor = debtors[debtorIndex];
 
-    const paymentAmount = Math.min(creditor.amount, debtor.amount);
+    const paymentCents = Math.min(creditor.amountCents, debtor.amountCents);
 
     settlements.push({
       from: debtor.participant,
       to: creditor.participant,
-      amount: paymentAmount,
+      amount: paymentCents / 100,
     });
 
-    creditor.amount -= paymentAmount;
-    debtor.amount -= paymentAmount;
+    creditor.amountCents -= paymentCents;
+    debtor.amountCents -= paymentCents;
 
-    if (creditor.amount === 0) {
+    if (creditor.amountCents === 0) {
       creditorIndex += 1;
     }
 
-    if (debtor.amount === 0) {
+    if (debtor.amountCents === 0) {
       debtorIndex += 1;
     }
   }

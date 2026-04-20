@@ -1,6 +1,11 @@
 import { ArrowRight, Users } from 'lucide-react';
 
-export default function BalanceList({ balances, settlements }) {
+export default function BalanceList({
+  balances,
+  settlements,
+  onSelectParticipant,
+  onEditGroup,
+}) {
   const sortedBalances = [...balances].sort(
     (firstBalance, secondBalance) =>
       secondBalance.balance - firstBalance.balance,
@@ -45,18 +50,21 @@ export default function BalanceList({ balances, settlements }) {
 
   return (
     <div>
-      <h2 className='mb-1.5 ms-1 text-lg font-semibold text-zinc-700'>
+      <h2 className='mb-1.5 ms-1 text-lg font-semibold text-zinc-900'>
         Balance
       </h2>
 
       <section className='rounded-2xl border border-zinc-200/90 bg-white/90 px-5 py-5 shadow-sm'>
         <div>
-          <div className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-600'>
+          <button
+            onClick={onEditGroup}
+            className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-600 hover:bg-zinc-200'
+          >
             <Users className='h-4 w-4 text-zinc-600' />
             <span>{participantCount}</span>
             <span className='text-zinc-700'>·</span>
             <span>{Number(totalPaidAmount.toFixed(2))}€</span>
-          </div>
+          </button>
         </div>
 
         <div className='mt-7 flex flex-col items-center'>
@@ -107,9 +115,10 @@ export default function BalanceList({ balances, settlements }) {
 
         <div className='mt-7 space-y-3'>
           {sortedBalances.map(({ participant, balance, totalPaid }) => (
-            <div
+            <button
               key={participant.id}
-              className='flex items-start justify-between gap-4 rounded-xl px-1 py-1'
+              onClick={() => onSelectParticipant(participant.id)}
+              className='flex w-full items-start justify-between gap-4 rounded-xl px-1 py-1 hover:bg-zinc-50'
             >
               <div className='flex min-w-0 items-center gap-3'>
                 <span
@@ -117,7 +126,7 @@ export default function BalanceList({ balances, settlements }) {
                   style={{ backgroundColor: participant.color }}
                 />
 
-                <span className='truncate text-base text-zinc-700'>
+                <span className='text-sm font-semibold text-zinc-800'>
                   {participant.name}
                 </span>
               </div>
@@ -136,7 +145,7 @@ export default function BalanceList({ balances, settlements }) {
                   paid {Math.round(totalPaid)}€
                 </p>
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </section>
