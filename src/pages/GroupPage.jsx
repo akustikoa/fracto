@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Trash2 } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
@@ -242,9 +243,9 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
                 {isEditingGroup && draftGroup ? (
                   <div className='space-y-4 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
-                    <div className='space-y-1.5'>
-                      <label className='text-xs font-medium text-zinc-500'>
-                        Group name
+                    <div className='space-y-1'>
+                      <label className='text-xs font-medium text-zinc-400'>
+                        Edit group
                       </label>
                       <input
                         type='text'
@@ -252,7 +253,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                         onChange={(event) =>
                           handleDraftGroupNameChange(event.target.value)
                         }
-                        className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm font-semibold text-zinc-800 outline-none transition focus:border-zinc-300'
+                        className='h-11 w-full rounded-xl border border-transparent bg-zinc-50 px-3 text-lg font-semibold text-zinc-900 outline-none transition hover:border-zinc-200/80 focus:border-zinc-300'
                       />
                     </div>
 
@@ -260,33 +261,65 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                       {draftGroup.participants.map((participant) => (
                         <div
                           key={participant.id}
-                          className='flex items-center gap-2'
+                          className='space-y-1.5'
                         >
-                          <span
-                            className='h-3 w-3 shrink-0 rounded-full'
-                            style={{ backgroundColor: participant.color }}
-                          />
-                          <input
-                            type='text'
-                            value={participant.name}
-                            onChange={(event) =>
-                              handleDraftParticipantNameChange(
-                                participant.id,
-                                event.target.value,
-                              )
-                            }
-                            className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
-                          />
-                          <button
-                            type='button'
-                            onClick={() =>
-                              handleRemoveParticipant(participant.id)
-                            }
-                            disabled={draftGroup.participants.length <= 1}
-                            className='h-10 rounded-xl border border-zinc-200/80 px-3 text-sm text-zinc-500 transition hover:bg-zinc-50 disabled:opacity-40'
-                          >
-                            Remove
-                          </button>
+                          {pendingRemoveId === participant.id ? (
+                            <div className='flex items-center gap-2 rounded-xl bg-zinc-50 px-2 py-2'>
+                              <span
+                                className='h-3 w-3 shrink-0 rounded-full'
+                                style={{ backgroundColor: participant.color }}
+                              />
+                              <p className='min-w-0 flex-1 text-sm text-zinc-700'>
+                                Remove {participant.name} and their expenses?
+                              </p>
+                              <div className='flex shrink-0 gap-1.5'>
+                                <button
+                                  type='button'
+                                  onClick={confirmRemoveParticipant}
+                                  className='h-8 rounded-lg px-2.5 text-sm font-medium text-zinc-900 transition hover:bg-zinc-100'
+                                >
+                                  Delete
+                                </button>
+
+                                <button
+                                  type='button'
+                                  onClick={() => setPendingRemoveId(null)}
+                                  className='h-8 rounded-lg px-2.5 text-sm text-zinc-600 transition hover:bg-white'
+                                >
+                                  Keep
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className='flex items-center gap-2'>
+                              <span
+                                className='h-3 w-3 shrink-0 rounded-full'
+                                style={{ backgroundColor: participant.color }}
+                              />
+                              <input
+                                type='text'
+                                value={participant.name}
+                                onChange={(event) =>
+                                  handleDraftParticipantNameChange(
+                                    participant.id,
+                                    event.target.value,
+                                  )
+                                }
+                                className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
+                              />
+                              <button
+                                type='button'
+                                onClick={() =>
+                                  handleRemoveParticipant(participant.id)
+                                }
+                                disabled={draftGroup.participants.length <= 1}
+                                aria-label={`Remove ${participant.name}`}
+                                className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600 disabled:opacity-40'
+                              >
+                                <Trash2 className='h-4 w-4' />
+                              </button>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -298,33 +331,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                     >
                       + Add participant
                     </button>
-
-                    {pendingRemoveId && (
-                      <div className='rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 py-3 text-sm text-zinc-700'>
-                        <p className='mb-2'>
-                          This will remove this participant, including their
-                          expenses.
-                        </p>
-
-                        <div className='flex gap-2'>
-                          <button
-                            type='button'
-                            onClick={confirmRemoveParticipant}
-                            className='h-9 flex-1 rounded-lg bg-zinc-900 text-sm text-white'
-                          >
-                            Remove
-                          </button>
-
-                          <button
-                            type='button'
-                            onClick={() => setPendingRemoveId(null)}
-                            className='h-9 rounded-lg border border-zinc-200/80 px-3 text-sm text-zinc-600'
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </div>
-                    )}
 
                     <div className='flex gap-2'>
                       <button
