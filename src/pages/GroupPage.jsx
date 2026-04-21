@@ -275,7 +275,12 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
             settlements={settlements}
             onSelectParticipant={handleSelectParticipant}
             onEditGroup={handleEditGroup}
-          />
+          >
+            <ExpenseInput
+              participants={group.participants}
+              onAddExpense={handleAddExpense}
+            />
+          </BalanceList>
 
           {(selectedParticipant || isEditingGroup) && (
             <div className='fixed inset-0 z-50 flex items-end justify-center'>
@@ -290,7 +295,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
-                className='relative w-full max-w-md rounded-t-3xl bg-white px-5 pt-5 shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300'
+                className='relative mb-4 max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pt-5 pb-8 shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300 mb-[calc(env(safe-area-inset-bottom)+12px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
                 style={{
                   transform: isSheetOpen
                     ? `translateY(${dragY}px)`
@@ -302,7 +307,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                 </div>
 
                 {isEditingGroup && draftGroup ? (
-                  <div className='space-y-4 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
+                  <div className='space-y-4'>
                     <div className='space-y-1'>
                       <label className='text-xs font-medium text-zinc-400'>
                         Edit group
@@ -319,10 +324,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
                     <div className='space-y-2'>
                       {draftGroup.participants.map((participant) => (
-                        <div
-                          key={participant.id}
-                          className='space-y-1.5'
-                        >
+                        <div key={participant.id} className='space-y-1.5'>
                           {pendingRemoveId === participant.id ? (
                             <div className='flex items-center gap-2 rounded-xl bg-zinc-50 px-2 py-2'>
                               <span
@@ -430,15 +432,12 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                       </span>
                     </div>
 
-                    <div className='space-y-3 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
+                    <div className='space-y-3'>
                       {participantExpenses.length === 0 ? (
                         <p className='text-sm text-zinc-400'>No expenses yet</p>
                       ) : (
                         participantExpenses.map((expense) => (
-                          <div
-                            key={expense.id}
-                            className='py-2.5 text-sm'
-                          >
+                          <div key={expense.id} className='py-2.5 text-sm'>
                             {editingExpenseId === expense.id ? (
                               <div className='space-y-2 rounded-xl bg-zinc-50 px-2 py-2'>
                                 <div className='flex gap-2'>
@@ -470,7 +469,9 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                                 <div className='flex justify-end gap-1'>
                                   <button
                                     type='button'
-                                    onClick={() => handleSaveExpense(expense.id)}
+                                    onClick={() =>
+                                      handleSaveExpense(expense.id)
+                                    }
                                     aria-label='Save expense'
                                     className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-900 transition hover:bg-white'
                                   >
@@ -494,7 +495,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                                 </span>
                                 <div className='flex shrink-0 items-center gap-3'>
                                   <span className='font-semibold text-zinc-900'>
-                              {expense.amount.toFixed(2)}€
+                                    {expense.amount.toFixed(2)}€
                                   </span>
 
                                   <button
@@ -517,11 +518,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
               </div>
             </div>
           )}
-
-          <ExpenseInput
-            participants={group.participants}
-            onAddExpense={handleAddExpense}
-          />
         </div>
       </div>
     </main>

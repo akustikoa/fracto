@@ -5,6 +5,7 @@ export default function BalanceList({
   settlements,
   onSelectParticipant,
   onEditGroup,
+  children,
 }) {
   const sortedBalances = [...balances].sort(
     (firstBalance, secondBalance) =>
@@ -150,8 +151,10 @@ export default function BalanceList({
         </div>
       </section>
 
+      {children && <div className='mt-5'>{children}</div>}
+
       {settlements.length > 0 && (
-        <div className='mt-7'>
+        <div className='mt-6'>
           <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>
             Suggested payments
           </h2>
