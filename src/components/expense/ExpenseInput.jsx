@@ -7,6 +7,9 @@ export default function ExpenseInput({ participants, onAddExpense }) {
   const [amount, setAmount] = useState('');
 
   const bottomRef = useRef(null);
+  const activePaidBy = participants.some((participant) => participant.id === paidBy)
+    ? paidBy
+    : participants[0]?.id ?? '';
 
   useEffect(() => {
     const isMobile = window.matchMedia('(max-width: 767px)').matches;
@@ -29,7 +32,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
     const parsedAmount = parseFloat(amount);
 
     if (
-      !paidBy ||
+      !activePaidBy ||
       !concept.trim() ||
       !amount ||
       isNaN(parsedAmount) ||
@@ -41,7 +44,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
 
     const newExpense = {
       id: crypto.randomUUID(),
-      paidBy,
+      paidBy: activePaidBy,
       concept: concept.trim(),
       amount: normalizedAmount,
       date: new Date().toISOString(),
@@ -89,7 +92,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
               <form onSubmit={handleSubmit} className='space-y-4'>
                 <div className='flex flex-wrap gap-2'>
                   {participants.map((participant) => {
-                    const isSelected = paidBy === participant.id;
+                    const isSelected = activePaidBy === participant.id;
 
                     return (
                       <button

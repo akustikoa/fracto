@@ -1,26 +1,36 @@
 import { useRef, useState } from 'react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
+import { participantColors } from '../data/participantColors';
 
 import GroupHeader from '../components/group/GroupHeader';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
 
-export default function GroupPage({ group, expenses, setExpenses }) {
+export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
+  const [isEditingGroup, setIsEditingGroup] = useState(false);
+  const [draftGroup, setDraftGroup] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
+  const [pendingRemoveId, setPendingRemoveId] = useState(null);
 
   const startYRef = useRef(null);
 
-  const balances = calculateBalances(group.participants, expenses);
+  const validParticipantIds = group.participants.map((p) => p.id);
+
+  const filteredExpenses = expenses.filter((expense) =>
+    validParticipantIds.includes(expense.paidBy),
+  );
+
+  const balances = calculateBalances(group.participants, filteredExpenses);
   const settlements = calculateSettlements(balances);
 
   const selectedParticipant = group.participants.find(
     (participant) => participant.id === selectedParticipantId,
   );
 
-  const participantExpenses = expenses.filter(
+  const participantExpenses = filteredExpenses.filter(
     (expense) => expense.paidBy === selectedParticipantId,
   );
 
@@ -34,6 +44,9 @@ export default function GroupPage({ group, expenses, setExpenses }) {
 
     setTimeout(() => {
       setSelectedParticipantId(null);
+      setIsEditingGroup(false);
+      setDraftGroup(null);
+      setPendingRemoveId(null);
     }, 200);
   }
 
@@ -63,10 +76,128 @@ export default function GroupPage({ group, expenses, setExpenses }) {
   }
 
   function handleSelectParticipant(participantId) {
+    if (selectedParticipantId === participantId) {
+      closeSheet();
+      return;
+    }
+
     setDragY(0);
+    setIsEditingGroup(false);
     setSelectedParticipantId(participantId);
     setIsSheetOpen(true);
   }
+
+  function handleEditGroup() {
+    setDragY(0);
+    setSelectedParticipantId(null);
+    setDraftGroup({
+      ...group,
+      participants: group.participants.map((participant) => ({
+        ...participant,
+      })),
+    });
+    setIsEditingGroup(true);
+    setIsSheetOpen(true);
+  }
+
+  function handleDraftGroupNameChange(name) {
+    setDraftGroup((currentGroup) => ({
+      ...currentGroup,
+      name,
+    }));
+  }
+
+  function handleDraftParticipantNameChange(participantId, name) {
+    setDraftGroup((currentGroup) => ({
+      ...currentGroup,
+      participants: currentGroup.participants.map((participant) =>
+        participant.id === participantId
+          ? { ...participant, name }
+          : participant,
+      ),
+    }));
+  }
+
+  function handleAddParticipant() {
+    setDraftGroup((currentGroup) => {
+      const nextIndex = currentGroup.participants.length;
+
+      return {
+        ...currentGroup,
+        participants: [
+          ...currentGroup.participants,
+          {
+            id: crypto.randomUUID(),
+            name: 'New participant',
+            initial: 'N',
+            color: participantColors[nextIndex % participantColors.length],
+          },
+        ],
+      };
+    });
+  }
+
+  function handleRemoveParticipant(participantId) {
+    const hasExpenses = expenses.some(
+      (expense) => expense.paidBy === participantId,
+    );
+
+    if (hasExpenses) {
+      setPendingRemoveId(participantId);
+      return;
+    }
+
+    setDraftGroup((currentGroup) => ({
+      ...currentGroup,
+      participants: currentGroup.participants.filter(
+        (participant) => participant.id !== participantId,
+      ),
+    }));
+  }
+
+  function confirmRemoveParticipant() {
+    setDraftGroup((currentGroup) => ({
+      ...currentGroup,
+      participants: currentGroup.participants.filter(
+        (participant) => participant.id !== pendingRemoveId,
+      ),
+    }));
+
+    setPendingRemoveId(null);
+  }
+
+  function handleSaveGroup() {
+    const trimmedGroupName = draftGroup.name.trim();
+    const updatedParticipants = draftGroup.participants.map((participant) => {
+      const trimmedName = participant.name.trim();
+
+      return {
+        ...participant,
+        name: trimmedName,
+        initial: trimmedName ? trimmedName.charAt(0).toUpperCase() : '',
+      };
+    });
+
+    if (
+      !trimmedGroupName ||
+      updatedParticipants.length === 0 ||
+      updatedParticipants.some((participant) => !participant.name)
+    ) {
+      return;
+    }
+
+    setGroup({
+      ...draftGroup,
+      name: trimmedGroupName,
+      participants: updatedParticipants,
+    });
+    closeSheet();
+  }
+
+  const canSaveDraftGroup =
+    draftGroup?.name.trim() &&
+    draftGroup.participants.length > 0 &&
+    draftGroup.participants.every((participant) => participant.name.trim());
 
   return (
     <main className='min-h-screen bg-zinc-100'>
@@ -78,9 +209,10 @@ export default function GroupPage({ group, expenses, setExpenses }) {
             balances={balances}
             settlements={settlements}
             onSelectParticipant={handleSelectParticipant}
+            onEditGroup={handleEditGroup}
           />
 
-          {selectedParticipant && (
+          {(selectedParticipant || isEditingGroup) && (
             <div className='fixed inset-0 z-50 flex items-end justify-center'>
               <div
                 className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${
@@ -104,33 +236,143 @@ export default function GroupPage({ group, expenses, setExpenses }) {
                   <div className='h-1.5 w-10 rounded-full bg-zinc-300' />
                 </div>
 
-                <div className='mb-4 flex items-center gap-2'>
-                  <span
-                    className='h-3 w-3 rounded-full'
-                    style={{ backgroundColor: selectedParticipant.color }}
-                  />
-                  <h3 className='text-sm font-semibold text-zinc-800'>
-                    {selectedParticipant.name}
-                  </h3>
-                </div>
+                {isEditingGroup && draftGroup ? (
+                  <div className='space-y-4 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
+                    <div className='space-y-1.5'>
+                      <label className='text-xs font-medium text-zinc-500'>
+                        Group name
+                      </label>
+                      <input
+                        type='text'
+                        value={draftGroup.name}
+                        onChange={(event) =>
+                          handleDraftGroupNameChange(event.target.value)
+                        }
+                        className='h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm font-semibold text-zinc-800 outline-none transition focus:border-zinc-400'
+                      />
+                    </div>
 
-                <div className='space-y-2 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
-                  {participantExpenses.length === 0 ? (
-                    <p className='text-sm text-zinc-400'>No expenses yet</p>
-                  ) : (
-                    participantExpenses.map((expense) => (
-                      <div
-                        key={expense.id}
-                        className='flex items-center justify-between text-sm'
-                      >
-                        <span className='text-zinc-700'>{expense.concept}</span>
-                        <span className='font-medium text-zinc-900'>
-                          {expense.amount.toFixed(2)}€
-                        </span>
+                    <div className='space-y-2'>
+                      {draftGroup.participants.map((participant) => (
+                        <div
+                          key={participant.id}
+                          className='flex items-center gap-2'
+                        >
+                          <span
+                            className='h-3 w-3 shrink-0 rounded-full'
+                            style={{ backgroundColor: participant.color }}
+                          />
+                          <input
+                            type='text'
+                            value={participant.name}
+                            onChange={(event) =>
+                              handleDraftParticipantNameChange(
+                                participant.id,
+                                event.target.value,
+                              )
+                            }
+                            className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-400'
+                          />
+                          <button
+                            type='button'
+                            onClick={() =>
+                              handleRemoveParticipant(participant.id)
+                            }
+                            disabled={draftGroup.participants.length <= 1}
+                            className='h-10 rounded-xl border border-zinc-200 px-3 text-sm text-zinc-500 transition hover:bg-zinc-50 disabled:opacity-40'
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      type='button'
+                      onClick={handleAddParticipant}
+                      className='h-10 w-full rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50'
+                    >
+                      + Add participant
+                    </button>
+
+                    {pendingRemoveId && (
+                      <div className='rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-sm text-zinc-700'>
+                        <p className='mb-2'>
+                          Removing this participant will also remove their
+                          expenses.
+                        </p>
+
+                        <div className='flex gap-2'>
+                          <button
+                            type='button'
+                            onClick={confirmRemoveParticipant}
+                            className='h-9 flex-1 rounded-lg bg-zinc-900 text-sm text-white'
+                          >
+                            Remove anyway
+                          </button>
+
+                          <button
+                            type='button'
+                            onClick={() => setPendingRemoveId(null)}
+                            className='h-9 rounded-lg border border-zinc-200 px-3 text-sm text-zinc-600'
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
-                    ))
-                  )}
-                </div>
+                    )}
+
+                    <div className='flex gap-2'>
+                      <button
+                        type='button'
+                        onClick={handleSaveGroup}
+                        disabled={!canSaveDraftGroup}
+                        className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-40'
+                      >
+                        Save
+                      </button>
+                      <button
+                        type='button'
+                        onClick={closeSheet}
+                        className='h-10 rounded-xl border border-zinc-200 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : selectedParticipant ? (
+                  <>
+                    <div className='mb-4 flex items-center gap-2'>
+                      <span
+                        className='h-3 w-3 rounded-full'
+                        style={{ backgroundColor: selectedParticipant.color }}
+                      />
+                      <h3 className='text-sm font-semibold text-zinc-800'>
+                        {selectedParticipant.name}
+                      </h3>
+                    </div>
+
+                    <div className='space-y-2 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
+                      {participantExpenses.length === 0 ? (
+                        <p className='text-sm text-zinc-400'>No expenses yet</p>
+                      ) : (
+                        participantExpenses.map((expense) => (
+                          <div
+                            key={expense.id}
+                            className='flex items-center justify-between text-sm'
+                          >
+                            <span className='text-zinc-700'>
+                              {expense.concept}
+                            </span>
+                            <span className='font-medium text-zinc-900'>
+                              {expense.amount.toFixed(2)}€
+                            </span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </>
+                ) : null}
               </div>
             </div>
           )}

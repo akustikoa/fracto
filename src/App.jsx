@@ -16,6 +16,11 @@ export default function App() {
   }
 
   return (
-    <GroupPage group={group} expenses={expenses} setExpenses={setExpenses} />
+    <GroupPage
+      group={group}
+      setGroup={setGroup}
+      expenses={expenses}
+      setExpenses={setExpenses}
+    />
   );
 }
