@@ -295,7 +295,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
-                className='relative mb-4 max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pt-5 pb-8 shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300 mb-[calc(env(safe-area-inset-bottom)+12px)] pb-[calc(env(safe-area-inset-bottom)+24px)]'
+                className='relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pt-5 pb-8 shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300 mb-[calc(env(safe-area-inset-bottom)+12px)]'
                 style={{
                   transform: isSheetOpen
                     ? `translateY(${dragY}px)`
