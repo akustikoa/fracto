@@ -204,7 +204,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     draftGroup.participants.every((participant) => participant.name.trim());
 
   return (
-    <main className='min-h-screen bg-zinc-100'>
+    <main className='min-h-screen bg-zinc-50'>
       <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
         <div className='space-y-7'>
           <GroupHeader group={group} />
@@ -229,7 +229,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
-                className='relative w-full max-w-md rounded-t-3xl bg-white px-5 pt-5 shadow-lg transition-transform duration-300'
+                className='relative w-full max-w-md rounded-t-3xl bg-white px-5 pt-5 shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300'
                 style={{
                   transform: isSheetOpen
                     ? `translateY(${dragY}px)`
@@ -252,7 +252,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                         onChange={(event) =>
                           handleDraftGroupNameChange(event.target.value)
                         }
-                        className='h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm font-semibold text-zinc-800 outline-none transition focus:border-zinc-400'
+                        className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm font-semibold text-zinc-800 outline-none transition focus:border-zinc-300'
                       />
                     </div>
 
@@ -275,7 +275,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                                 event.target.value,
                               )
                             }
-                            className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-400'
+                            className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
                           />
                           <button
                             type='button'
@@ -283,7 +283,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                               handleRemoveParticipant(participant.id)
                             }
                             disabled={draftGroup.participants.length <= 1}
-                            className='h-10 rounded-xl border border-zinc-200 px-3 text-sm text-zinc-500 transition hover:bg-zinc-50 disabled:opacity-40'
+                            className='h-10 rounded-xl border border-zinc-200/80 px-3 text-sm text-zinc-500 transition hover:bg-zinc-50 disabled:opacity-40'
                           >
                             Remove
                           </button>
@@ -300,7 +300,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                     </button>
 
                     {pendingRemoveId && (
-                      <div className='rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-sm text-zinc-700'>
+                      <div className='rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 py-3 text-sm text-zinc-700'>
                         <p className='mb-2'>
                           This will remove this participant, including their
                           expenses.
@@ -318,7 +318,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                           <button
                             type='button'
                             onClick={() => setPendingRemoveId(null)}
-                            className='h-9 rounded-lg border border-zinc-200 px-3 text-sm text-zinc-600'
+                            className='h-9 rounded-lg border border-zinc-200/80 px-3 text-sm text-zinc-600'
                           >
                             Cancel
                           </button>
@@ -338,7 +338,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                       <button
                         type='button'
                         onClick={closeSheet}
-                        className='h-10 rounded-xl border border-zinc-200 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
+                        className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
                       >
                         Cancel
                       </button>
@@ -352,7 +352,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                           className='h-3 w-3 shrink-0 rounded-full'
                           style={{ backgroundColor: selectedParticipant.color }}
                         />
-                        <h3 className='truncate text- font-semibold text-zinc-900'>
+                        <h3 className='truncate text-base font-semibold text-zinc-900'>
                           {selectedParticipant.name}
                         </h3>
                       </div>
@@ -369,12 +369,12 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                         participantExpenses.map((expense) => (
                           <div
                             key={expense.id}
-                            className='flex items-center justify-between text-sm py-2.5'
+                            className='flex items-center justify-between py-2.5 text-sm'
                           >
-                            <span className='text-zinc-800 font-medium700'>
+                            <span className='font-medium text-zinc-800'>
                               {expense.concept}
                             </span>
-                            <span className='font-semi-bold text-zinc-900'>
+                            <span className='font-semibold text-zinc-900'>
                               {expense.amount.toFixed(2)}€
                             </span>
                           </div>

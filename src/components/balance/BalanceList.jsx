@@ -54,7 +54,7 @@ export default function BalanceList({
         Balance
       </h2>
 
-      <section className='rounded-2xl border border-zinc-200/90 bg-white/90 px-5 py-5 shadow-sm'>
+      <section className='rounded-2xl border border-zinc-200/80 bg-white/95 px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
         <div>
           <button
             onClick={onEditGroup}
@@ -156,12 +156,12 @@ export default function BalanceList({
             Suggested payments
           </h2>
 
-          <section className='rounded-2xl border border-zinc-200/90 bg-white px-5 py-5 shadow-sm'>
+          <section className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
             <div className='space-y-3'>
               {settlements.map((settlement, index) => (
                 <div
                   key={index}
-                  className='flex items-center justify-between gap-3 rounded-xl border border-zinc-300 bg-white px-3 py-3'
+                  className='flex items-center justify-between gap-3 rounded-xl border border-zinc-200/80 bg-white px-3 py-3'
                 >
                   <div className='flex min-w-0 items-center gap-3'>
                     <span

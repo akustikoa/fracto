@@ -88,7 +88,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
               Paid by
             </h2>
 
-            <div className='rounded-2xl border border-zinc-200/90 bg-white px-4 py-4 shadow-sm'>
+            <div className='rounded-2xl border border-zinc-200/80 bg-white px-4 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
               <form onSubmit={handleSubmit} className='space-y-4'>
                 <div className='flex flex-wrap gap-2'>
                   {participants.map((participant) => {
@@ -102,7 +102,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
                         className={`inline-flex h-10 items-center gap-2 rounded-xl border px-3 text-sm transition ${
                           isSelected
                             ? 'justify-center border-transparent'
-                            : 'border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50'
+                            : 'border-zinc-200/80 bg-zinc-50 hover:border-zinc-300 hover:bg-white'
                         }`}
                         style={{
                           backgroundColor: isSelected
@@ -137,7 +137,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
                     placeholder='Concept'
                     value={concept}
                     onChange={(event) => setConcept(event.target.value)}
-                    className='h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-400'
+                    className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
                   />
 
                   <input
@@ -159,7 +159,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
 
                       setAmount(value);
                     }}
-                    className='h-10 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-400'
+                    className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
                   />
                 </div>
 
