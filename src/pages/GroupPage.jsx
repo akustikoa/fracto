@@ -34,6 +34,10 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     (expense) => expense.paidBy === selectedParticipantId,
   );
 
+  const participantTotal = participantExpenses.reduce(
+    (sum, expense) => sum + expense.amount,
+    0,
+  );
   function handleAddExpense(newExpense) {
     setExpenses((previousExpenses) => [...previousExpenses, newExpense]);
   }
@@ -298,7 +302,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                     {pendingRemoveId && (
                       <div className='rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3 text-sm text-zinc-700'>
                         <p className='mb-2'>
-                          Removing this participant will also remove their
+                          This will remove this participant, including their
                           expenses.
                         </p>
 
@@ -308,7 +312,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                             onClick={confirmRemoveParticipant}
                             className='h-9 flex-1 rounded-lg bg-zinc-900 text-sm text-white'
                           >
-                            Remove anyway
+                            Remove
                           </button>
 
                           <button
@@ -342,29 +346,35 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                   </div>
                 ) : selectedParticipant ? (
                   <>
-                    <div className='mb-4 flex items-center gap-2'>
-                      <span
-                        className='h-3 w-3 rounded-full'
-                        style={{ backgroundColor: selectedParticipant.color }}
-                      />
-                      <h3 className='text-sm font-semibold text-zinc-800'>
-                        {selectedParticipant.name}
-                      </h3>
+                    <div className='mb-5 flex items-center justify-between gap-3'>
+                      <div className='flex min-w-0 items-center gap-2'>
+                        <span
+                          className='h-3 w-3 shrink-0 rounded-full'
+                          style={{ backgroundColor: selectedParticipant.color }}
+                        />
+                        <h3 className='truncate text- font-semibold text-zinc-900'>
+                          {selectedParticipant.name}
+                        </h3>
+                      </div>
+
+                      <span className='shrink-0 text-base font-semibold text-zinc-900'>
+                        {participantTotal.toFixed(2)}€
+                      </span>
                     </div>
 
-                    <div className='space-y-2 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
+                    <div className='space-y-3 pb-[calc(env(safe-area-inset-bottom)+16px)]'>
                       {participantExpenses.length === 0 ? (
                         <p className='text-sm text-zinc-400'>No expenses yet</p>
                       ) : (
                         participantExpenses.map((expense) => (
                           <div
                             key={expense.id}
-                            className='flex items-center justify-between text-sm'
+                            className='flex items-center justify-between text-sm py-2.5'
                           >
-                            <span className='text-zinc-700'>
+                            <span className='text-zinc-800 font-medium700'>
                               {expense.concept}
                             </span>
-                            <span className='font-medium text-zinc-900'>
+                            <span className='font-semi-bold text-zinc-900'>
                               {expense.amount.toFixed(2)}€
                             </span>
                           </div>
