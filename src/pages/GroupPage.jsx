@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Check, Pencil, Trash2, X } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
@@ -15,6 +15,11 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [dragY, setDragY] = useState(0);
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
+  const [editingExpenseId, setEditingExpenseId] = useState(null);
+  const [expenseDraft, setExpenseDraft] = useState({
+    concept: '',
+    amount: '',
+  });
 
   const startYRef = useRef(null);
 
@@ -52,6 +57,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       setIsEditingGroup(false);
       setDraftGroup(null);
       setPendingRemoveId(null);
+      setEditingExpenseId(null);
     }, 200);
   }
 
@@ -88,6 +94,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
     setDragY(0);
     setIsEditingGroup(false);
+    setEditingExpenseId(null);
     setSelectedParticipantId(participantId);
     setIsSheetOpen(true);
   }
@@ -95,6 +102,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   function handleEditGroup() {
     setDragY(0);
     setSelectedParticipantId(null);
+    setEditingExpenseId(null);
     setDraftGroup({
       ...group,
       participants: group.participants.map((participant) => ({
@@ -199,6 +207,58 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     closeSheet();
   }
 
+  function handleEditExpense(expense) {
+    setEditingExpenseId(expense.id);
+    setExpenseDraft({
+      concept: expense.concept,
+      amount: String(expense.amount),
+    });
+  }
+
+  function handleExpenseDraftAmountChange(value) {
+    const normalizedValue = value.replace(',', '.');
+
+    if (normalizedValue === '' || /^\d*\.?\d{0,2}$/.test(normalizedValue)) {
+      setExpenseDraft((currentDraft) => ({
+        ...currentDraft,
+        amount: normalizedValue,
+      }));
+    }
+  }
+
+  function handleSaveExpense(expenseId) {
+    const parsedAmount = parseFloat(expenseDraft.amount);
+
+    if (
+      !expenseDraft.concept.trim() ||
+      !expenseDraft.amount ||
+      isNaN(parsedAmount) ||
+      parsedAmount <= 0
+    ) {
+      return;
+    }
+
+    const normalizedAmount = Math.round(parsedAmount * 100) / 100;
+
+    setExpenses((previousExpenses) =>
+      previousExpenses.map((expense) =>
+        expense.id === expenseId
+          ? {
+              ...expense,
+              concept: expenseDraft.concept.trim(),
+              amount: normalizedAmount,
+            }
+          : expense,
+      ),
+    );
+
+    setEditingExpenseId(null);
+  }
+
+  function handleCancelExpenseEdit() {
+    setEditingExpenseId(null);
+  }
+
   const canSaveDraftGroup =
     draftGroup?.name.trim() &&
     draftGroup.participants.length > 0 &&
@@ -272,21 +332,23 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                               <p className='min-w-0 flex-1 text-sm text-zinc-700'>
                                 Remove {participant.name} and their expenses?
                               </p>
-                              <div className='flex shrink-0 gap-1.5'>
+                              <div className='flex shrink-0 gap-1'>
                                 <button
                                   type='button'
                                   onClick={confirmRemoveParticipant}
-                                  className='h-8 rounded-lg px-2.5 text-sm font-medium text-zinc-900 transition hover:bg-zinc-100'
+                                  aria-label={`Delete ${participant.name}`}
+                                  className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-900 transition hover:bg-white'
                                 >
-                                  Delete
+                                  <Check className='h-4 w-4' />
                                 </button>
 
                                 <button
                                   type='button'
                                   onClick={() => setPendingRemoveId(null)}
-                                  className='h-8 rounded-lg px-2.5 text-sm text-zinc-600 transition hover:bg-white'
+                                  aria-label={`Keep ${participant.name}`}
+                                  className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-white hover:text-zinc-700'
                                 >
-                                  Keep
+                                  <X className='h-4 w-4' />
                                 </button>
                               </div>
                             </div>
@@ -375,14 +437,77 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                         participantExpenses.map((expense) => (
                           <div
                             key={expense.id}
-                            className='flex items-center justify-between py-2.5 text-sm'
+                            className='py-2.5 text-sm'
                           >
-                            <span className='font-medium text-zinc-800'>
-                              {expense.concept}
-                            </span>
-                            <span className='font-semibold text-zinc-900'>
+                            {editingExpenseId === expense.id ? (
+                              <div className='space-y-2 rounded-xl bg-zinc-50 px-2 py-2'>
+                                <div className='flex gap-2'>
+                                  <input
+                                    type='text'
+                                    value={expenseDraft.concept}
+                                    onChange={(event) =>
+                                      setExpenseDraft((currentDraft) => ({
+                                        ...currentDraft,
+                                        concept: event.target.value,
+                                      }))
+                                    }
+                                    className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-white px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
+                                  />
+
+                                  <input
+                                    type='text'
+                                    inputMode='decimal'
+                                    value={expenseDraft.amount}
+                                    onChange={(event) =>
+                                      handleExpenseDraftAmountChange(
+                                        event.target.value,
+                                      )
+                                    }
+                                    className='h-10 w-24 rounded-xl border border-zinc-200/80 bg-white px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
+                                  />
+                                </div>
+
+                                <div className='flex justify-end gap-1'>
+                                  <button
+                                    type='button'
+                                    onClick={() => handleSaveExpense(expense.id)}
+                                    aria-label='Save expense'
+                                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-900 transition hover:bg-white'
+                                  >
+                                    <Check className='h-4 w-4' />
+                                  </button>
+
+                                  <button
+                                    type='button'
+                                    onClick={handleCancelExpenseEdit}
+                                    aria-label='Cancel expense edit'
+                                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-white hover:text-zinc-700'
+                                  >
+                                    <X className='h-4 w-4' />
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className='flex items-center justify-between gap-3'>
+                                <span className='min-w-0 flex-1 font-medium text-zinc-800'>
+                                  {expense.concept}
+                                </span>
+                                <div className='flex shrink-0 items-center gap-3'>
+                                  <span className='font-semibold text-zinc-900'>
                               {expense.amount.toFixed(2)}€
-                            </span>
+                                  </span>
+
+                                  <button
+                                    type='button'
+                                    onClick={() => handleEditExpense(expense)}
+                                    aria-label={`Edit ${expense.concept}`}
+                                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-700'
+                                  >
+                                    <Pencil className='h-4 w-4' />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))
                       )}
