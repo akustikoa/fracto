@@ -50,12 +50,12 @@ export default function BalanceList({
 
   return (
     <div>
-      <h2 className='mb-1.5 ms-1 text-lg font-semibold text-zinc-900'>
+      <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>
         Balance
       </h2>
 
       <section className='rounded-2xl border border-zinc-200/80 bg-white/95 px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
-        <div>
+        <div className='mb-1'>
           <button
             onClick={onEditGroup}
             className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-600 hover:bg-zinc-200'
@@ -67,7 +67,7 @@ export default function BalanceList({
           </button>
         </div>
 
-        <div className='mt-7 flex flex-col items-center'>
+        <div className='mt-6 flex flex-col items-center'>
           <div className='relative flex items-center justify-center'>
             <svg
               width={size}
@@ -113,7 +113,7 @@ export default function BalanceList({
           </div>
         </div>
 
-        <div className='mt-7 space-y-3'>
+        <div className='mt-6 space-y-3'>
           {sortedBalances.map(({ participant, balance, totalPaid }) => (
             <button
               key={participant.id}
@@ -151,8 +151,8 @@ export default function BalanceList({
       </section>
 
       {settlements.length > 0 && (
-        <div className='mt-6'>
-          <h2 className='mb-1.5 ms-1 text-lg font-semibold text-zinc-900'>
+        <div className='mt-7'>
+          <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>
             Suggested payments
           </h2>
 
