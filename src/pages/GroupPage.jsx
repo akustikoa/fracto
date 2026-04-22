@@ -1,10 +1,12 @@
-import { useRef, useState } from 'react';
-import { Check, Pencil, Trash2, X } from 'lucide-react';
+import { useState } from 'react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
+import useBottomSheetDrag from '../hooks/useBottomSheetDrag';
 
 import GroupHeader from '../components/group/GroupHeader';
+import EditGroupSheet from '../components/group/EditGroupSheet';
+import ParticipantSheet from '../components/group/ParticipantSheet';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
 
@@ -13,15 +15,12 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [draftGroup, setDraftGroup] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [dragY, setDragY] = useState(0);
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
   const [editingExpenseId, setEditingExpenseId] = useState(null);
   const [expenseDraft, setExpenseDraft] = useState({
     concept: '',
     amount: '',
   });
-
-  const startYRef = useRef(null);
 
   const validParticipantIds = group.participants.map((p) => p.id);
 
@@ -50,7 +49,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
   function closeSheet() {
     setIsSheetOpen(false);
-    setDragY(0);
 
     setTimeout(() => {
       setSelectedParticipantId(null);
@@ -61,38 +59,26 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     }, 200);
   }
 
-  function handleTouchStart(event) {
-    startYRef.current = event.touches[0].clientY;
-  }
+  const {
+    dragY,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+    resetDrag,
+  } = useBottomSheetDrag(closeSheet);
 
-  function handleTouchMove(event) {
-    if (!startYRef.current) return;
-
-    const currentY = event.touches[0].clientY;
-    const diff = currentY - startYRef.current;
-
-    if (diff > 0) {
-      setDragY(diff);
-    }
-  }
-
-  function handleTouchEnd() {
-    if (dragY > 100) {
-      closeSheet();
-    } else {
-      setDragY(0);
-    }
-
-    startYRef.current = null;
+  function handleCloseSheet() {
+    resetDrag();
+    closeSheet();
   }
 
   function handleSelectParticipant(participantId) {
     if (selectedParticipantId === participantId) {
-      closeSheet();
+      handleCloseSheet();
       return;
     }
 
-    setDragY(0);
+    resetDrag();
     setIsEditingGroup(false);
     setEditingExpenseId(null);
     setSelectedParticipantId(participantId);
@@ -100,7 +86,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   }
 
   function handleEditGroup() {
-    setDragY(0);
+    resetDrag();
     setSelectedParticipantId(null);
     setEditingExpenseId(null);
     setDraftGroup({
@@ -204,7 +190,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       name: trimmedGroupName,
       participants: updatedParticipants,
     });
-    closeSheet();
+    handleCloseSheet();
   }
 
   function handleEditExpense(expense) {
@@ -224,6 +210,13 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
         amount: normalizedValue,
       }));
     }
+  }
+
+  function handleExpenseDraftConceptChange(value) {
+    setExpenseDraft((currentDraft) => ({
+      ...currentDraft,
+      concept: value,
+    }));
   }
 
   function handleSaveExpense(expenseId) {
@@ -288,7 +281,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                 className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${
                   isSheetOpen ? 'opacity-100' : 'opacity-0'
                 }`}
-                onClick={closeSheet}
+                onClick={handleCloseSheet}
               />
 
               <div
@@ -307,213 +300,38 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                 </div>
 
                 {isEditingGroup && draftGroup ? (
-                  <div className='space-y-4'>
-                    <div className='space-y-1'>
-                      <label className='text-xs font-medium text-zinc-400'>
-                        Edit group
-                      </label>
-                      <input
-                        type='text'
-                        value={draftGroup.name}
-                        onChange={(event) =>
-                          handleDraftGroupNameChange(event.target.value)
-                        }
-                        className='h-11 w-full rounded-xl border border-transparent bg-zinc-50 px-3 text-lg font-semibold text-zinc-900 outline-none transition hover:border-zinc-200/80 focus:border-zinc-300'
-                      />
-                    </div>
-
-                    <div className='space-y-2'>
-                      {draftGroup.participants.map((participant) => (
-                        <div key={participant.id} className='space-y-1.5'>
-                          {pendingRemoveId === participant.id ? (
-                            <div className='flex items-center gap-2 rounded-xl bg-zinc-50 px-2 py-2'>
-                              <span
-                                className='h-3 w-3 shrink-0 rounded-full'
-                                style={{ backgroundColor: participant.color }}
-                              />
-                              <p className='min-w-0 flex-1 text-sm text-zinc-700'>
-                                Remove {participant.name} and their expenses?
-                              </p>
-                              <div className='flex shrink-0 gap-1'>
-                                <button
-                                  type='button'
-                                  onClick={confirmRemoveParticipant}
-                                  aria-label={`Delete ${participant.name}`}
-                                  className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-900 transition hover:bg-white'
-                                >
-                                  <Check className='h-4 w-4' />
-                                </button>
-
-                                <button
-                                  type='button'
-                                  onClick={() => setPendingRemoveId(null)}
-                                  aria-label={`Keep ${participant.name}`}
-                                  className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-white hover:text-zinc-700'
-                                >
-                                  <X className='h-4 w-4' />
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className='flex items-center gap-2'>
-                              <span
-                                className='h-3 w-3 shrink-0 rounded-full'
-                                style={{ backgroundColor: participant.color }}
-                              />
-                              <input
-                                type='text'
-                                value={participant.name}
-                                onChange={(event) =>
-                                  handleDraftParticipantNameChange(
-                                    participant.id,
-                                    event.target.value,
-                                  )
-                                }
-                                className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
-                              />
-                              <button
-                                type='button'
-                                onClick={() =>
-                                  handleRemoveParticipant(participant.id)
-                                }
-                                disabled={draftGroup.participants.length <= 1}
-                                aria-label={`Remove ${participant.name}`}
-                                className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600 disabled:opacity-40'
-                              >
-                                <Trash2 className='h-4 w-4' />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-
-                    <button
-                      type='button'
-                      onClick={handleAddParticipant}
-                      className='h-10 w-full rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50'
-                    >
-                      + Add participant
-                    </button>
-
-                    <div className='flex gap-2'>
-                      <button
-                        type='button'
-                        onClick={handleSaveGroup}
-                        disabled={!canSaveDraftGroup}
-                        className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 disabled:opacity-40'
-                      >
-                        Save
-                      </button>
-                      <button
-                        type='button'
-                        onClick={closeSheet}
-                        className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
+                  <EditGroupSheet
+                    draftGroup={draftGroup}
+                    pendingRemoveId={pendingRemoveId}
+                    canSaveDraftGroup={canSaveDraftGroup}
+                    onDraftGroupNameChange={handleDraftGroupNameChange}
+                    onDraftParticipantNameChange={
+                      handleDraftParticipantNameChange
+                    }
+                    onAddParticipant={handleAddParticipant}
+                    onRemoveParticipant={handleRemoveParticipant}
+                    onConfirmRemoveParticipant={confirmRemoveParticipant}
+                    onCancelPendingRemove={() => setPendingRemoveId(null)}
+                    onSaveGroup={handleSaveGroup}
+                    onCancel={handleCloseSheet}
+                  />
                 ) : selectedParticipant ? (
-                  <>
-                    <div className='mb-5 flex items-center justify-between gap-3'>
-                      <div className='flex min-w-0 items-center gap-2'>
-                        <span
-                          className='h-3 w-3 shrink-0 rounded-full'
-                          style={{ backgroundColor: selectedParticipant.color }}
-                        />
-                        <h3 className='truncate text-base font-semibold text-zinc-900'>
-                          {selectedParticipant.name}
-                        </h3>
-                      </div>
-
-                      <span className='shrink-0 text-base font-semibold text-zinc-900'>
-                        {participantTotal.toFixed(2)}€
-                      </span>
-                    </div>
-
-                    <div className='space-y-3'>
-                      {participantExpenses.length === 0 ? (
-                        <p className='text-sm text-zinc-400'>No expenses yet</p>
-                      ) : (
-                        participantExpenses.map((expense) => (
-                          <div key={expense.id} className='py-2.5 text-sm'>
-                            {editingExpenseId === expense.id ? (
-                              <div className='space-y-2 rounded-xl bg-zinc-50 px-2 py-2'>
-                                <div className='flex gap-2'>
-                                  <input
-                                    type='text'
-                                    value={expenseDraft.concept}
-                                    onChange={(event) =>
-                                      setExpenseDraft((currentDraft) => ({
-                                        ...currentDraft,
-                                        concept: event.target.value,
-                                      }))
-                                    }
-                                    className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-white px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
-                                  />
-
-                                  <input
-                                    type='text'
-                                    inputMode='decimal'
-                                    value={expenseDraft.amount}
-                                    onChange={(event) =>
-                                      handleExpenseDraftAmountChange(
-                                        event.target.value,
-                                      )
-                                    }
-                                    className='h-10 w-24 rounded-xl border border-zinc-200/80 bg-white px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
-                                  />
-                                </div>
-
-                                <div className='flex justify-end gap-1'>
-                                  <button
-                                    type='button'
-                                    onClick={() =>
-                                      handleSaveExpense(expense.id)
-                                    }
-                                    aria-label='Save expense'
-                                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-900 transition hover:bg-white'
-                                  >
-                                    <Check className='h-4 w-4' />
-                                  </button>
-
-                                  <button
-                                    type='button'
-                                    onClick={handleCancelExpenseEdit}
-                                    aria-label='Cancel expense edit'
-                                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-white hover:text-zinc-700'
-                                  >
-                                    <X className='h-4 w-4' />
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className='flex items-center justify-between gap-3'>
-                                <span className='min-w-0 flex-1 font-medium text-zinc-800'>
-                                  {expense.concept}
-                                </span>
-                                <div className='flex shrink-0 items-center gap-3'>
-                                  <span className='font-semibold text-zinc-900'>
-                                    {expense.amount.toFixed(2)}€
-                                  </span>
-
-                                  <button
-                                    type='button'
-                                    onClick={() => handleEditExpense(expense)}
-                                    aria-label={`Edit ${expense.concept}`}
-                                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-700'
-                                  >
-                                    <Pencil className='h-4 w-4' />
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </>
+                  <ParticipantSheet
+                    selectedParticipant={selectedParticipant}
+                    participantTotal={participantTotal}
+                    participantExpenses={participantExpenses}
+                    editingExpenseId={editingExpenseId}
+                    expenseDraft={expenseDraft}
+                    onEditExpense={handleEditExpense}
+                    onExpenseDraftConceptChange={
+                      handleExpenseDraftConceptChange
+                    }
+                    onExpenseDraftAmountChange={
+                      handleExpenseDraftAmountChange
+                    }
+                    onSaveExpense={handleSaveExpense}
+                    onCancelExpenseEdit={handleCancelExpenseEdit}
+                  />
                 ) : null}
               </div>
             </div>
