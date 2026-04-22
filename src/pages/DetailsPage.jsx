@@ -48,15 +48,17 @@ export default function DetailsPage({ group, expenses, onBack }) {
                 <p className='text-2xl font-semibold tracking-tight tabular-nums text-zinc-900'>
                   {totalSpent.toFixed(2)}€
                 </p>
-                <p className='mt-0.5 text-xs font-medium text-zinc-400'>total</p>
+                <p className='mt-0.5 text-xs font-medium text-zinc-400'>
+                  total
+                </p>
               </div>
             </div>
 
-            <div className='mt-4 flex flex-wrap gap-x-5 gap-y-2.5'>
+            <div className='mt-5 flex flex-wrap gap-x-5 gap-y-2.5'>
               {group.participants.map((participant) => (
                 <div
                   key={participant.id}
-                  className='inline-flex max-w-full items-center gap-2 text-sm text-zinc-600'
+                  className='inline-flex max-w-full items-center gap-2 text-sm text-zinc-500'
                 >
                   <span
                     className='h-2 w-2 shrink-0 rounded-full'
@@ -70,11 +72,14 @@ export default function DetailsPage({ group, expenses, onBack }) {
 
           <SettlementList settlements={settlements} />
 
-          <ParticipantBreakdown balances={balances} expenses={filteredExpenses} />
+          <ParticipantBreakdown
+            balances={balances}
+            expenses={filteredExpenses}
+          />
 
           <button
             type='button'
-            className='h-10 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+            className='!mt-8 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
             Share
           </button>

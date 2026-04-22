@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 export default function SettlementList({ settlements }) {
   return (
     <section>
-      <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>
+      <h2 className='mb-3 ms-1 text-xl font-semibold tracking-tight text-zinc-900'>
         Suggested payments
       </h2>
 
