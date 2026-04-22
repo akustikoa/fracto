@@ -262,7 +262,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     <main className='min-h-screen bg-zinc-50'>
       <AppHeader groupId={group.id} variant='group' />
 
-      <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
+      <div className='mx-auto max-w-3xl px-4 py-5 md:px-6 md:py-6'>
         <div className='space-y-6'>
           <GroupHeader group={group} />
 
