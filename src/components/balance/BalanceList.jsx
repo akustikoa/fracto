@@ -5,6 +5,7 @@ export default function BalanceList({
   settlements,
   onSelectParticipant,
   onEditGroup,
+  footerAction,
   children,
 }) {
   const sortedBalances = [...balances].sort(
@@ -147,9 +148,11 @@ export default function BalanceList({
             </button>
           ))}
         </div>
+
+        {children && <div className='mt-5'>{children}</div>}
       </section>
 
-      {children && <div className='mt-5'>{children}</div>}
+      {footerAction && <div className='mt-5'>{footerAction}</div>}
 
       {settlements.length > 0 && (
         <div className='mt-6'>

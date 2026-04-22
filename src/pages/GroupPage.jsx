@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
@@ -12,6 +13,7 @@ import ExpenseInput from '../components/expense/ExpenseInput';
 import AppHeader from '../components/layout/AppHeader';
 
 export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
+  const navigate = useNavigate();
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [draftGroup, setDraftGroup] = useState(null);
@@ -271,10 +273,20 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
             settlements={settlements}
             onSelectParticipant={handleSelectParticipant}
             onEditGroup={handleEditGroup}
+            footerAction={
+              <button
+                type='button'
+                onClick={() => navigate(`/details/${group.id}`)}
+                className='h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800'
+              >
+                Review & share
+              </button>
+            }
           >
             <ExpenseInput
               participants={group.participants}
               onAddExpense={handleAddExpense}
+              triggerVariant='secondary'
             />
           </BalanceList>
 

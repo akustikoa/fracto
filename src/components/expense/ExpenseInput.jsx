@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
-export default function ExpenseInput({ participants, onAddExpense }) {
+export default function ExpenseInput({
+  participants,
+  onAddExpense,
+  triggerVariant = 'primary',
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [paidBy, setPaidBy] = useState(participants[0]?.id ?? '');
   const [concept, setConcept] = useState('');
@@ -57,6 +61,11 @@ export default function ExpenseInput({ participants, onAddExpense }) {
     setIsOpen(false);
   }
 
+  const triggerClassName =
+    triggerVariant === 'secondary'
+      ? 'h-11 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-800'
+      : 'h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800';
+
   return (
     <section className='space-y-3'>
       <div
@@ -67,7 +76,7 @@ export default function ExpenseInput({ participants, onAddExpense }) {
         <button
           type='button'
           onClick={() => setIsOpen(true)}
-          className='h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800'
+          className={triggerClassName}
         >
           Add expense
         </button>

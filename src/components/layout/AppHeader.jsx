@@ -8,7 +8,7 @@ export default function AppHeader({ groupId, variant }) {
   const actionPath = isDetails ? `/group/${groupId}` : `/details/${groupId}`;
 
   return (
-    <header className='border-b border-zinc-200/50 bg-white'>
+    <header className='border-b border-zinc-200/50 bg-[#f72c25]'>
       <div className='mx-auto flex h-16 max-w-3xl items-center justify-between px-4 md:px-6'>
         <div className='flex min-w-0 items-center gap-2.5'>
           <img
