@@ -51,9 +51,7 @@ export default function BalanceList({
 
   return (
     <div>
-      <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>
-        Balance
-      </h2>
+      <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>Balance</h2>
 
       <section className='rounded-2xl border border-zinc-200/80 bg-white/95 px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
         <div className='mb-1'>
@@ -143,7 +141,7 @@ export default function BalanceList({
                 </p>
 
                 <p className='mt-0.5 text-xs text-zinc-400'>
-                  paid {Math.round(totalPaid)}€
+                  paid {totalPaid.toFixed(2)}€
                 </p>
               </div>
             </button>

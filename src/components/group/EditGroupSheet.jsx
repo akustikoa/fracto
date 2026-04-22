@@ -14,18 +14,20 @@ export default function EditGroupSheet({
   onCancel,
 }) {
   return (
-    <div className='space-y-4'>
-      <div className='space-y-1'>
-        <label className='text-xs font-medium text-zinc-400'>Edit group</label>
+    <div className='space-y-5'>
+      <div className='space-y-2'>
+        <label className='block text-sm font-medium text-zinc-700'>
+          Edit group
+        </label>
         <input
           type='text'
           value={draftGroup.name}
           onChange={(event) => onDraftGroupNameChange(event.target.value)}
-          className='h-11 w-full rounded-xl border border-transparent bg-zinc-50 px-3 text-lg font-semibold text-zinc-900 outline-none transition hover:border-zinc-200/80 focus:border-zinc-300'
+          className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
         />
       </div>
 
-      <div className='space-y-2'>
+      <div className='space-y-4'>
         {draftGroup.participants.map((participant) => (
           <div key={participant.id} className='space-y-1.5'>
             {pendingRemoveId === participant.id ? (
