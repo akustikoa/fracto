@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
@@ -10,9 +9,9 @@ import EditGroupSheet from '../components/group/EditGroupSheet';
 import ParticipantSheet from '../components/group/ParticipantSheet';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
+import AppHeader from '../components/layout/AppHeader';
 
 export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
-  const navigate = useNavigate();
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [draftGroup, setDraftGroup] = useState(null);
@@ -261,19 +260,11 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
   return (
     <main className='min-h-screen bg-zinc-50'>
-      <div className='mx-auto max-w-3xl px-4 py-7 md:px-6 md:py-9'>
-        <div className='space-y-6'>
-          <div className='space-y-3'>
-            <GroupHeader group={group} />
+      <AppHeader groupId={group.id} variant='group' />
 
-            <button
-              type='button'
-              onClick={() => navigate(`/details/${group.id}`)}
-              className='h-9 rounded-xl border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:bg-zinc-100'
-            >
-              Details
-            </button>
-          </div>
+      <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
+        <div className='space-y-6'>
+          <GroupHeader group={group} />
 
           <BalanceList
             balances={balances}
