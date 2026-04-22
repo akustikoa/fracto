@@ -1,9 +1,12 @@
+import { useNavigate, useParams } from 'react-router-dom';
 import SettlementList from '../components/details/SettlementList';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 
-export default function DetailsPage({ group, expenses, onBack }) {
+export default function DetailsPage({ group, expenses }) {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const validParticipantIds = group.participants.map(
     (participant) => participant.id,
   );
@@ -23,15 +26,13 @@ export default function DetailsPage({ group, expenses, onBack }) {
     <main className='min-h-screen bg-zinc-50'>
       <div className='mx-auto max-w-3xl px-4 py-7 md:px-6 md:py-9'>
         <div className='space-y-6'>
-          {onBack && (
-            <button
-              type='button'
-              onClick={onBack}
-              className='h-9 rounded-xl border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:bg-zinc-100'
-            >
-              Back
-            </button>
-          )}
+          <button
+            type='button'
+            onClick={() => navigate(`/group/${id}`)}
+            className='h-9 rounded-xl border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:bg-zinc-100'
+          >
+            Back
+          </button>
 
           <header className='rounded-2xl border border-zinc-200/70 bg-white px-5 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.035)]'>
             <div className='flex items-start justify-between gap-4'>

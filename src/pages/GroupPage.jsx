@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
@@ -9,10 +10,9 @@ import EditGroupSheet from '../components/group/EditGroupSheet';
 import ParticipantSheet from '../components/group/ParticipantSheet';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
-import DetailsPage from './DetailsPage';
 
 export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
-  const [showDetails, setShowDetails] = useState(false);
+  const navigate = useNavigate();
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [draftGroup, setDraftGroup] = useState(null);
@@ -259,16 +259,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     draftGroup.participants.length > 0 &&
     draftGroup.participants.every((participant) => participant.name.trim());
 
-  if (showDetails) {
-    return (
-      <DetailsPage
-        group={group}
-        expenses={expenses}
-        onBack={() => setShowDetails(false)}
-      />
-    );
-  }
-
   return (
     <main className='min-h-screen bg-zinc-50'>
       <div className='mx-auto max-w-3xl px-4 py-7 md:px-6 md:py-9'>
@@ -278,7 +268,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
             <button
               type='button'
-              onClick={() => setShowDetails(true)}
+              onClick={() => navigate(`/details/${group.id}`)}
               className='h-9 rounded-xl border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-700 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition hover:bg-zinc-100'
             >
               Details
