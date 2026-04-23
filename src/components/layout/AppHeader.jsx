@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import fractoLogo from '../../assets/branding/fracto-logo.png';
 
 export default function AppHeader({ groupId, variant }) {
   const navigate = useNavigate();
   const isDetails = variant === 'details';
-  const actionLabel = isDetails ? 'Back' : 'Full details →';
   const actionPath = isDetails ? `/group/${groupId}` : `/details/${groupId}`;
 
   return (
@@ -21,9 +21,10 @@ export default function AppHeader({ groupId, variant }) {
         <button
           type='button'
           onClick={() => navigate(actionPath)}
-          className='rounded-xl bg-zinc-100 px-3 py-1.5 text-sm font-medium text-zinc-800 transition hover:bg-zinc-200'
+          aria-label={isDetails ? 'Back to group' : undefined}
+          className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
         >
-          {actionLabel}
+          {isDetails ? <ArrowLeft size={18} strokeWidth={2} /> : 'Details'}
         </button>
       </div>
     </header>
