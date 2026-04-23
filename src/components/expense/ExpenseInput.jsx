@@ -63,7 +63,7 @@ export default function ExpenseInput({
 
   const triggerClassName =
     triggerVariant === 'secondary'
-      ? 'h-11 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-800'
+      ? 'h-11 w-full rounded-xl border border-zinc-200/80 bg-zinc-100 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-800'
       : 'h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800';
 
   return (

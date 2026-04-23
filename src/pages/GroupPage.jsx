@@ -19,11 +19,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [draftGroup, setDraftGroup] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
-  const [editingExpenseId, setEditingExpenseId] = useState(null);
-  const [expenseDraft, setExpenseDraft] = useState({
-    concept: '',
-    amount: '',
-  });
+  const [draftParticipantExpenses, setDraftParticipantExpenses] = useState([]);
 
   const validParticipantIds = group.participants.map((p) => p.id);
 
@@ -38,14 +34,15 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     (participant) => participant.id === selectedParticipantId,
   );
 
-  const participantExpenses = filteredExpenses.filter(
-    (expense) => expense.paidBy === selectedParticipantId,
-  );
+  const draftParticipantTotal = draftParticipantExpenses.reduce(
+    (sum, expense) => {
+      const parsedAmount = parseFloat(expense.amount);
 
-  const participantTotal = participantExpenses.reduce(
-    (sum, expense) => sum + expense.amount,
+      return isNaN(parsedAmount) ? sum : sum + parsedAmount;
+    },
     0,
   );
+
   function handleAddExpense(newExpense) {
     setExpenses((previousExpenses) => [...previousExpenses, newExpense]);
   }
@@ -58,7 +55,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       setIsEditingGroup(false);
       setDraftGroup(null);
       setPendingRemoveId(null);
-      setEditingExpenseId(null);
+      setDraftParticipantExpenses([]);
     }, 200);
   }
 
@@ -73,14 +70,21 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     }
 
     setIsEditingGroup(false);
-    setEditingExpenseId(null);
+    setDraftParticipantExpenses(
+      filteredExpenses
+        .filter((expense) => expense.paidBy === participantId)
+        .map((expense) => ({
+          ...expense,
+          amount: String(expense.amount),
+        })),
+    );
     setSelectedParticipantId(participantId);
     setIsSheetOpen(true);
   }
 
   function handleEditGroup() {
     setSelectedParticipantId(null);
-    setEditingExpenseId(null);
+    setDraftParticipantExpenses([]);
     setDraftGroup({
       ...group,
       participants: group.participants.map((participant) => ({
@@ -185,63 +189,78 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     handleCloseSheet();
   }
 
-  function handleEditExpense(expense) {
-    setEditingExpenseId(expense.id);
-    setExpenseDraft({
-      concept: expense.concept,
-      amount: String(expense.amount),
-    });
+  function handleExpenseDraftConceptChange(expenseId, value) {
+    setDraftParticipantExpenses((currentDraft) =>
+      currentDraft.map((expense) =>
+        expense.id === expenseId ? { ...expense, concept: value } : expense,
+      ),
+    );
   }
 
-  function handleExpenseDraftAmountChange(value) {
+  function handleExpenseDraftAmountChange(expenseId, value) {
     const normalizedValue = value.replace(',', '.');
 
     if (normalizedValue === '' || /^\d*\.?\d{0,2}$/.test(normalizedValue)) {
-      setExpenseDraft((currentDraft) => ({
-        ...currentDraft,
-        amount: normalizedValue,
-      }));
+      setDraftParticipantExpenses((currentDraft) =>
+        currentDraft.map((expense) =>
+          expense.id === expenseId
+            ? { ...expense, amount: normalizedValue }
+            : expense,
+        ),
+      );
     }
   }
 
-  function handleExpenseDraftConceptChange(value) {
-    setExpenseDraft((currentDraft) => ({
-      ...currentDraft,
-      concept: value,
-    }));
+  function handleRemoveExpense(expenseId) {
+    setDraftParticipantExpenses((currentDraft) =>
+      currentDraft.filter((expense) => expense.id !== expenseId),
+    );
   }
 
-  function handleSaveExpense(expenseId) {
-    const parsedAmount = parseFloat(expenseDraft.amount);
+  function handleSaveParticipantExpenses() {
+    const hasInvalidExpense = draftParticipantExpenses.some((expense) => {
+      const parsedAmount = parseFloat(expense.amount);
 
-    if (
-      !expenseDraft.concept.trim() ||
-      !expenseDraft.amount ||
-      isNaN(parsedAmount) ||
-      parsedAmount <= 0
-    ) {
+      return (
+        !expense.concept.trim() ||
+        !expense.amount ||
+        isNaN(parsedAmount) ||
+        parsedAmount <= 0
+      );
+    });
+
+    if (hasInvalidExpense) {
       return;
     }
 
-    const normalizedAmount = Math.round(parsedAmount * 100) / 100;
+    const normalizedExpenseById = new Map(
+      draftParticipantExpenses.map((expense) => {
+        const parsedAmount = parseFloat(expense.amount);
 
-    setExpenses((previousExpenses) =>
-      previousExpenses.map((expense) =>
-        expense.id === expenseId
-          ? {
-              ...expense,
-              concept: expenseDraft.concept.trim(),
-              amount: normalizedAmount,
-            }
-          : expense,
-      ),
+        return [
+          expense.id,
+          {
+            ...expense,
+            concept: expense.concept.trim(),
+            amount: Math.round(parsedAmount * 100) / 100,
+          },
+        ];
+      }),
     );
 
-    setEditingExpenseId(null);
-  }
+    setExpenses((previousExpenses) =>
+      previousExpenses.flatMap((expense) => {
+        if (expense.paidBy !== selectedParticipantId) {
+          return [expense];
+        }
 
-  function handleCancelExpenseEdit() {
-    setEditingExpenseId(null);
+        const normalizedExpense = normalizedExpenseById.get(expense.id);
+
+        return normalizedExpense ? [normalizedExpense] : [];
+      }),
+    );
+
+    handleCloseSheet();
   }
 
   const canSaveDraftGroup =
@@ -324,17 +343,15 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                 ) : selectedParticipant ? (
                   <ParticipantSheet
                     selectedParticipant={selectedParticipant}
-                    participantTotal={participantTotal}
-                    participantExpenses={participantExpenses}
-                    editingExpenseId={editingExpenseId}
-                    expenseDraft={expenseDraft}
-                    onEditExpense={handleEditExpense}
+                    participantTotal={draftParticipantTotal}
+                    draftExpenses={draftParticipantExpenses}
+                    onRemoveExpense={handleRemoveExpense}
                     onExpenseDraftConceptChange={
                       handleExpenseDraftConceptChange
                     }
                     onExpenseDraftAmountChange={handleExpenseDraftAmountChange}
-                    onSaveExpense={handleSaveExpense}
-                    onCancelExpenseEdit={handleCancelExpenseEdit}
+                    onSave={handleSaveParticipantExpenses}
+                    onCancel={handleCloseSheet}
                   />
                 ) : null}
               </div>
