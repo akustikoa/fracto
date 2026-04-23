@@ -303,7 +303,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       <AppHeader groupId={group.id} variant='group' />
 
       <div className='mx-auto max-w-3xl px-4 py-5 md:px-6 md:py-6'>
-        <div className='space-y-6'>
+        <div className='space-y-4'>
           <GroupHeader group={group} />
 
           <BalanceList
