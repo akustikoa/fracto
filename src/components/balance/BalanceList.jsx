@@ -70,7 +70,7 @@ export default function BalanceList({
           <button
             type='button'
             onClick={onResetGroup}
-            className='inline-flex h-7 w-25 shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-3 text-sm text-zinc-600 transition hover:bg-zinc-200 hover:text-red-500'
+            className='inline-flex h-7 w-23 shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-3 text-sm text-zinc-600 transition hover:bg-zinc-200 hover:text-red-500'
           >
             <RotateCcw className='h-4 w-4' />
             <span>Reset</span>
