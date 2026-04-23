@@ -1,34 +1,35 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import { X } from 'lucide-react';
 
 export default function ExpenseInput({
   participants,
   onAddExpense,
   triggerVariant = 'primary',
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isRendered, setIsRendered] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [paidBy, setPaidBy] = useState(participants[0]?.id ?? '');
   const [concept, setConcept] = useState('');
   const [amount, setAmount] = useState('');
 
-  const bottomRef = useRef(null);
-  const activePaidBy = participants.some((participant) => participant.id === paidBy)
+  const activePaidBy = participants.some(
+    (participant) => participant.id === paidBy,
+  )
     ? paidBy
-    : participants[0]?.id ?? '';
+    : (participants[0]?.id ?? '');
 
-  useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+  function openSheet() {
+    setIsRendered(true);
+    window.setTimeout(() => setIsSheetOpen(true), 0);
+  }
 
-    if (isOpen && isMobile) {
-      const timer = setTimeout(() => {
-        bottomRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-        });
-      }, 80);
+  function closeSheet() {
+    setIsSheetOpen(false);
 
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
+    window.setTimeout(() => {
+      setIsRendered(false);
+    }, 200);
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -58,7 +59,7 @@ export default function ExpenseInput({
 
     setConcept('');
     setAmount('');
-    setIsOpen(false);
+    closeSheet();
   }
 
   const triggerClassName =
@@ -67,132 +68,135 @@ export default function ExpenseInput({
       : 'h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800';
 
   return (
-    <section className='space-y-3'>
-      <div
-        className={`relative overflow-hidden transition-all duration-300 ${
-          isOpen ? 'h-0' : 'h-12'
-        }`}
-      >
-        <button
-          type='button'
-          onClick={() => setIsOpen(true)}
-          className={triggerClassName}
-        >
-          Add expense
-        </button>
-      </div>
+    <>
+      <button type='button' onClick={openSheet} className={triggerClassName}>
+        Add expense
+      </button>
 
-      <div
-        className={`overflow-hidden transition-[max-height,transform] duration-300 ease-out ${
-          isOpen ? 'max-h-[700px] translate-y-[-12px]' : 'max-h-0'
-        }`}
-      >
-        <div
-          className={`transition-opacity duration-700 ${
-            isOpen ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <div className='space-y-2'>
-            <h2 className='mb-1.5 ms-1 text-lg font-semibold text-zinc-900'>
-              Paid by
-            </h2>
+      {isRendered && (
+        <div className='fixed inset-0 z-50 flex items-end justify-center'>
+          <div
+            className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${
+              isSheetOpen ? 'opacity-100' : 'opacity-0'
+            }`}
+            onClick={closeSheet}
+          />
 
-            <div className='rounded-2xl border border-zinc-200/80 bg-white px-4 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
-              <form onSubmit={handleSubmit} className='space-y-4'>
-                <div className='flex flex-wrap gap-2'>
-                  {participants.map((participant) => {
-                    const isSelected = activePaidBy === participant.id;
-
-                    return (
-                      <button
-                        key={participant.id}
-                        type='button'
-                        onClick={() => setPaidBy(participant.id)}
-                        className={`inline-flex h-10 items-center gap-2 rounded-xl border px-3 text-sm transition ${
-                          isSelected
-                            ? 'justify-center border-transparent'
-                            : 'border-zinc-200/80 bg-zinc-50 hover:border-zinc-300 hover:bg-white'
-                        }`}
-                        style={{
-                          backgroundColor: isSelected
-                            ? participant.color
-                            : undefined,
-                        }}
-                      >
-                        <span
-                          className={`h-2.5 w-2.5 rounded-full ${
-                            isSelected ? 'invisible' : ''
-                          }`}
-                          style={{ backgroundColor: participant.color }}
-                        />
-
-                        <span
-                          className={`text-sm font-semibold ${
-                            isSelected ? 'text-white' : 'text-zinc-800'
-                          }`}
-                        >
-                          {participant.name}
-                        </span>
-
-                        <span className='invisible w-2.5' />
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className='space-y-3'>
-                  <input
-                    type='text'
-                    placeholder='Concept'
-                    value={concept}
-                    onChange={(event) => setConcept(event.target.value)}
-                    className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
-                  />
-
-                  <input
-                    type='text'
-                    inputMode='decimal'
-                    placeholder='€'
-                    value={amount}
-                    onChange={(event) => {
-                      let value = event.target.value.replace(',', '.');
-
-                      // permet buit
-                      if (value === '') {
-                        setAmount('');
-                        return;
-                      }
-
-                      // només números + 1 decimal + màxim 2 decimals
-                      if (!/^\d*\.?\d{0,2}$/.test(value)) return;
-
-                      setAmount(value);
-                    }}
-                    className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
-                  />
-                </div>
-
-                <div ref={bottomRef} className='flex gap-2'>
-                  <button
-                    type='submit'
-                    className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
-                  >
-                    Add
-                  </button>
-
-                  <button
-                    type='button'
-                    onClick={() => setIsOpen(false)}
-                    className='h-10 rounded-xl border border-zinc-200 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
+          <div
+            className='relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300'
+            style={{
+              transform: isSheetOpen ? 'translateY(0)' : 'translateY(100%)',
+            }}
+          >
+            <div className='mb-2 flex justify-end'>
+              <button
+                type='button'
+                onClick={closeSheet}
+                aria-label='Close sheet'
+                className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900'
+              >
+                <X className='h-5 w-5' />
+              </button>
             </div>
+
+            <form onSubmit={handleSubmit} className='space-y-6'>
+              <div className='space-y-2'>
+                <label className='block text-sm font-medium text-zinc-700'>
+                  Add expense
+                </label>
+              </div>
+
+              <div className='flex flex-wrap gap-3'>
+                {participants.map((participant) => {
+                  const isSelected = activePaidBy === participant.id;
+
+                  return (
+                    <button
+                      key={participant.id}
+                      type='button'
+                      onClick={() => setPaidBy(participant.id)}
+                      className={`inline-flex h-10 items-center gap-2 rounded-xl border px-3 text-sm transition ${
+                        isSelected
+                          ? 'justify-center border-transparent'
+                          : 'border-zinc-200/80 bg-zinc-50 hover:border-zinc-300 hover:bg-white'
+                      }`}
+                      style={{
+                        backgroundColor: isSelected
+                          ? participant.color
+                          : undefined,
+                      }}
+                    >
+                      <span
+                        className={`h-2.5 w-2.5 rounded-full ${
+                          isSelected ? 'invisible' : ''
+                        }`}
+                        style={{ backgroundColor: participant.color }}
+                      />
+
+                      <span
+                        className={`text-sm font-semibold ${
+                          isSelected ? 'text-white' : 'text-zinc-800'
+                        }`}
+                      >
+                        {participant.name}
+                      </span>
+
+                      <span className='invisible w-2.5' />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className='space-y-3'>
+                <input
+                  type='text'
+                  placeholder='Concept'
+                  value={concept}
+                  onChange={(event) => setConcept(event.target.value)}
+                  className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
+                />
+
+                <input
+                  type='text'
+                  inputMode='decimal'
+                  placeholder='€'
+                  value={amount}
+                  onChange={(event) => {
+                    const value = event.target.value.replace(',', '.');
+
+                    if (value === '') {
+                      setAmount('');
+                      return;
+                    }
+
+                    if (!/^\d*\.?\d{0,2}$/.test(value)) return;
+
+                    setAmount(value);
+                  }}
+                  className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
+                />
+              </div>
+
+              <div className='flex gap-2'>
+                <button
+                  type='submit'
+                  className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+                >
+                  Add
+                </button>
+
+                <button
+                  type='button'
+                  onClick={closeSheet}
+                  className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
-    </section>
+      )}
+    </>
   );
 }

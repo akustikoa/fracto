@@ -1,10 +1,13 @@
-import { Trash2 } from 'lucide-react';
+import { Check, Trash2, X } from 'lucide-react';
 
 export default function ParticipantSheet({
   selectedParticipant,
   participantTotal,
   draftExpenses,
+  pendingRemoveExpenseId,
   onRemoveExpense,
+  onConfirmRemoveExpense,
+  onCancelPendingRemoveExpense,
   onExpenseDraftConceptChange,
   onExpenseDraftAmountChange,
   onSave,
@@ -32,37 +35,82 @@ export default function ParticipantSheet({
         {draftExpenses.length === 0 ? (
           <p className='text-sm text-zinc-400'>No expenses yet</p>
         ) : (
-          draftExpenses.map((expense) => (
-            <div key={expense.id} className='flex items-center gap-2'>
-              <input
-                type='text'
-                value={expense.concept}
-                onChange={(event) =>
-                  onExpenseDraftConceptChange(expense.id, event.target.value)
-                }
-                className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
-              />
+          draftExpenses.map((expense) => {
+            const expenseConcept = expense.concept.trim() || 'this expense';
+            const expenseAmount = expense.amount || '0';
+            const isPendingRemove = pendingRemoveExpenseId === expense.id;
 
-              <input
-                type='text'
-                inputMode='decimal'
-                value={expense.amount}
-                onChange={(event) =>
-                  onExpenseDraftAmountChange(expense.id, event.target.value)
-                }
-                className='h-10 w-24 shrink-0 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
-              />
+            return (
+              <div key={expense.id} className='space-y-1.5'>
+                {isPendingRemove ? (
+                  <div className='flex items-center gap-2 rounded-xl bg-zinc-50 px-2 py-2'>
+                    <span
+                      className='h-3 w-3 shrink-0 rounded-full'
+                      style={{ backgroundColor: selectedParticipant.color }}
+                    />
+                    <p className='min-w-0 flex-1 text-sm text-zinc-700'>
+                      Remove {expenseConcept} ({expenseAmount}€)?
+                    </p>
+                    <div className='flex shrink-0 gap-1'>
+                      <button
+                        type='button'
+                        onClick={onConfirmRemoveExpense}
+                        aria-label={`Delete ${expenseConcept}`}
+                        className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-900 transition hover:bg-white'
+                      >
+                        <Check className='h-4 w-4' />
+                      </button>
 
-              <button
-                type='button'
-                onClick={() => onRemoveExpense(expense.id)}
-                aria-label={`Remove ${expense.concept}`}
-                className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600'
-              >
-                <Trash2 className='h-4 w-4' />
-              </button>
-            </div>
-          ))
+                      <button
+                        type='button'
+                        onClick={onCancelPendingRemoveExpense}
+                        aria-label={`Keep ${expenseConcept}`}
+                        className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-white hover:text-zinc-700'
+                      >
+                        <X className='h-4 w-4' />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className='flex items-center gap-2'>
+                    <input
+                      type='text'
+                      value={expense.concept}
+                      onChange={(event) =>
+                        onExpenseDraftConceptChange(
+                          expense.id,
+                          event.target.value,
+                        )
+                      }
+                      className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
+                    />
+
+                    <input
+                      type='text'
+                      inputMode='decimal'
+                      value={expense.amount}
+                      onChange={(event) =>
+                        onExpenseDraftAmountChange(
+                          expense.id,
+                          event.target.value,
+                        )
+                      }
+                      className='h-10 w-24 shrink-0 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
+                    />
+
+                    <button
+                      type='button'
+                      onClick={() => onRemoveExpense(expense.id)}
+                      aria-label={`Remove ${expenseConcept}`}
+                      className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600'
+                    >
+                      <Trash2 className='h-4 w-4' />
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
 

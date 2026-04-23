@@ -23,7 +23,7 @@ export default function EditGroupSheet({
           type='text'
           value={draftGroup.name}
           onChange={(event) => onDraftGroupNameChange(event.target.value)}
-          className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
+          className='h-10 mb-2 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
         />
       </div>
 

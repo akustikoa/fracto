@@ -19,6 +19,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [draftGroup, setDraftGroup] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
+  const [pendingRemoveExpenseId, setPendingRemoveExpenseId] = useState(null);
   const [draftParticipantExpenses, setDraftParticipantExpenses] = useState([]);
 
   const validParticipantIds = group.participants.map((p) => p.id);
@@ -55,6 +56,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       setIsEditingGroup(false);
       setDraftGroup(null);
       setPendingRemoveId(null);
+      setPendingRemoveExpenseId(null);
       setDraftParticipantExpenses([]);
     }, 200);
   }
@@ -70,6 +72,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     }
 
     setIsEditingGroup(false);
+    setPendingRemoveExpenseId(null);
     setDraftParticipantExpenses(
       filteredExpenses
         .filter((expense) => expense.paidBy === participantId)
@@ -84,6 +87,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
   function handleEditGroup() {
     setSelectedParticipantId(null);
+    setPendingRemoveExpenseId(null);
     setDraftParticipantExpenses([]);
     setDraftGroup({
       ...group,
@@ -212,9 +216,14 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   }
 
   function handleRemoveExpense(expenseId) {
+    setPendingRemoveExpenseId(expenseId);
+  }
+
+  function confirmRemoveExpense() {
     setDraftParticipantExpenses((currentDraft) =>
-      currentDraft.filter((expense) => expense.id !== expenseId),
+      currentDraft.filter((expense) => expense.id !== pendingRemoveExpenseId),
     );
+    setPendingRemoveExpenseId(null);
   }
 
   function handleSaveParticipantExpenses() {
@@ -313,14 +322,14 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                   transform: isSheetOpen ? 'translateY(0)' : 'translateY(100%)',
                 }}
               >
-                <div className='mb-2 flex justify-end'>
+                <div className='mb-1 flex justify-end'>
                   <button
                     type='button'
                     onClick={handleCloseSheet}
                     aria-label='Close sheet'
                     className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900'
                   >
-                    <X className='h-4 w-4' />
+                    <X className='h-5 w-5' />
                   </button>
                 </div>
 
@@ -345,7 +354,12 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                     selectedParticipant={selectedParticipant}
                     participantTotal={draftParticipantTotal}
                     draftExpenses={draftParticipantExpenses}
+                    pendingRemoveExpenseId={pendingRemoveExpenseId}
                     onRemoveExpense={handleRemoveExpense}
+                    onConfirmRemoveExpense={confirmRemoveExpense}
+                    onCancelPendingRemoveExpense={() =>
+                      setPendingRemoveExpenseId(null)
+                    }
                     onExpenseDraftConceptChange={
                       handleExpenseDraftConceptChange
                     }
