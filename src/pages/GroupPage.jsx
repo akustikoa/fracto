@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { X } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
-import useBottomSheetDrag from '../hooks/useBottomSheetDrag';
 
 import GroupHeader from '../components/group/GroupHeader';
 import EditGroupSheet from '../components/group/EditGroupSheet';
@@ -62,16 +62,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     }, 200);
   }
 
-  const {
-    dragY,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
-    resetDrag,
-  } = useBottomSheetDrag(closeSheet);
-
   function handleCloseSheet() {
-    resetDrag();
     closeSheet();
   }
 
@@ -81,7 +72,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       return;
     }
 
-    resetDrag();
     setIsEditingGroup(false);
     setEditingExpenseId(null);
     setSelectedParticipantId(participantId);
@@ -89,7 +79,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   }
 
   function handleEditGroup() {
-    resetDrag();
     setSelectedParticipantId(null);
     setEditingExpenseId(null);
     setDraftGroup({
@@ -300,18 +289,20 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
               />
 
               <div
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                className='relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pt-5 pb-8 shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300 mb-[calc(env(safe-area-inset-bottom)+12px)]'
+                className='relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300'
                 style={{
-                  transform: isSheetOpen
-                    ? `translateY(${dragY}px)`
-                    : 'translateY(100%)',
+                  transform: isSheetOpen ? 'translateY(0)' : 'translateY(100%)',
                 }}
               >
-                <div className='mb-4 flex justify-center'>
-                  <div className='h-1.5 w-10 rounded-full bg-zinc-300' />
+                <div className='mb-2 flex justify-end'>
+                  <button
+                    type='button'
+                    onClick={handleCloseSheet}
+                    aria-label='Close sheet'
+                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900'
+                  >
+                    <X className='h-4 w-4' />
+                  </button>
                 </div>
 
                 {isEditingGroup && draftGroup ? (

@@ -14,7 +14,7 @@ export default function EditGroupSheet({
   onCancel,
 }) {
   return (
-    <div className='space-y-5'>
+    <div className='space-y-6'>
       <div className='space-y-2'>
         <label className='block text-sm font-medium text-zinc-700'>
           Edit group
