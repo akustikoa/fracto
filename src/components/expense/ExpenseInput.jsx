@@ -59,7 +59,6 @@ export default function ExpenseInput({
 
     setConcept('');
     setAmount('');
-    closeSheet();
   }
 
   const triggerClassName =

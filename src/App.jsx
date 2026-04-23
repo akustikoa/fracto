@@ -20,11 +20,17 @@ export default function App() {
   useEffect(() => {
     if (group) {
       localStorage.setItem('fracto_group', JSON.stringify(group));
+    } else {
+      localStorage.removeItem('fracto_group');
     }
   }, [group]);
 
   useEffect(() => {
-    localStorage.setItem('fracto_expenses', JSON.stringify(expenses));
+    if (expenses.length > 0) {
+      localStorage.setItem('fracto_expenses', JSON.stringify(expenses));
+    } else {
+      localStorage.removeItem('fracto_expenses');
+    }
   }, [expenses]);
 
   function handleCreateGroup(newGroup) {

@@ -1,10 +1,11 @@
-import { ArrowRight, Users } from 'lucide-react';
+import { ArrowRight, RotateCcw, Users } from 'lucide-react';
 
 export default function BalanceList({
   balances,
   settlements,
   onSelectParticipant,
   onEditGroup,
+  onResetGroup,
   footerAction,
   children,
 }) {
@@ -55,7 +56,7 @@ export default function BalanceList({
       <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>Balance</h2>
 
       <section className='rounded-2xl border border-zinc-200/80 bg-white/95 px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
-        <div className='mb-1'>
+        <div className='mb-1 flex items-center justify-between gap-3'>
           <button
             onClick={onEditGroup}
             className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-600 hover:bg-zinc-200'
@@ -64,6 +65,15 @@ export default function BalanceList({
             <span>{participantCount}</span>
             <span className='text-zinc-700'>·</span>
             <span>{Number(totalPaidAmount.toFixed(2))}€</span>
+          </button>
+
+          <button
+            type='button'
+            onClick={onResetGroup}
+            className='inline-flex h-7 w-25 shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-3 text-sm text-zinc-600 transition hover:bg-zinc-200 hover:text-red-500'
+          >
+            <RotateCcw className='h-4 w-4' />
+            <span>Reset</span>
           </button>
         </div>
 

@@ -18,6 +18,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [draftGroup, setDraftGroup] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isConfirmingReset, setIsConfirmingReset] = useState(false);
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
   const [pendingRemoveExpenseId, setPendingRemoveExpenseId] = useState(null);
   const [draftParticipantExpenses, setDraftParticipantExpenses] = useState([]);
@@ -48,12 +49,32 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     setExpenses((previousExpenses) => [...previousExpenses, newExpense]);
   }
 
+  function handleResetRequest() {
+    setSelectedParticipantId(null);
+    setIsEditingGroup(false);
+    setDraftGroup(null);
+    setPendingRemoveId(null);
+    setPendingRemoveExpenseId(null);
+    setDraftParticipantExpenses([]);
+    setIsConfirmingReset(true);
+    setIsSheetOpen(true);
+  }
+
+  function handleResetGroup() {
+    localStorage.removeItem('fracto_group');
+    localStorage.removeItem('fracto_expenses');
+    setGroup(null);
+    setExpenses([]);
+    navigate('/');
+  }
+
   function closeSheet() {
     setIsSheetOpen(false);
 
     setTimeout(() => {
       setSelectedParticipantId(null);
       setIsEditingGroup(false);
+      setIsConfirmingReset(false);
       setDraftGroup(null);
       setPendingRemoveId(null);
       setPendingRemoveExpenseId(null);
@@ -290,6 +311,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
             settlements={settlements}
             onSelectParticipant={handleSelectParticipant}
             onEditGroup={handleEditGroup}
+            onResetGroup={handleResetRequest}
             footerAction={
               <button
                 type='button'
@@ -307,7 +329,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
             />
           </BalanceList>
 
-          {(selectedParticipant || isEditingGroup) && (
+          {(selectedParticipant || isEditingGroup || isConfirmingReset) && (
             <div className='fixed inset-0 z-50 flex items-end justify-center'>
               <div
                 className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${
@@ -333,7 +355,36 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                   </button>
                 </div>
 
-                {isEditingGroup && draftGroup ? (
+                {isConfirmingReset ? (
+                  <div className='space-y-6'>
+                    <div className='space-y-2'>
+                      <label className='block text-sm font-medium text-zinc-700'>
+                        Delete group
+                      </label>
+                      <p className='text-sm leading-6 text-zinc-600'>
+                        Do you want to delete group {group.name} and all
+                        expenses? This action cannot be undone.
+                      </p>
+                    </div>
+
+                    <div className='flex gap-2'>
+                      <button
+                        type='button'
+                        onClick={handleResetGroup}
+                        className='h-10 flex-1 rounded-xl bg-red-600 px-4 text-sm font-medium text-white transition hover:bg-red-500'
+                      >
+                        Delete group
+                      </button>
+                      <button
+                        type='button'
+                        onClick={handleCloseSheet}
+                        className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : isEditingGroup && draftGroup ? (
                   <EditGroupSheet
                     draftGroup={draftGroup}
                     pendingRemoveId={pendingRemoveId}
