@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { toPng } from 'html-to-image';
 import { useParams } from 'react-router-dom';
 import SettlementList from '../components/details/SettlementList';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
@@ -25,6 +26,50 @@ export default function DetailsPage({ group, expenses }) {
     0,
   );
   const totalAmount = totalSpent;
+
+  const handleShare = async () => {
+    if (!shareCardRef.current) {
+      return;
+    }
+
+    const detailsUrl = `${window.location.origin}/group/${group.id}`;
+
+    try {
+      const dataUrl = await toPng(shareCardRef.current, { cacheBust: true });
+      const downloadLink = document.createElement('a');
+      downloadLink.href = dataUrl;
+      downloadLink.download = 'fracto-summary.png';
+      downloadLink.click();
+
+      const blob = await fetch(dataUrl).then((response) => response.blob());
+      const file = new File([blob], 'fracto-summary.png', {
+        type: 'image/png',
+      });
+
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+      ) {
+        await navigator.share({
+          title: group.name,
+          text: `View details:\n${detailsUrl}`,
+          files: [file],
+        });
+        return;
+      }
+
+      await navigator.clipboard.writeText(detailsUrl);
+    } catch (error) {
+      console.error('Error sharing summary image', error);
+
+      try {
+        await navigator.clipboard.writeText(detailsUrl);
+      } catch (clipboardError) {
+        console.error('Error copying details link', clipboardError);
+      }
+    }
+  };
 
   return (
     <main className='min-h-screen bg-zinc-50'>
@@ -76,14 +121,20 @@ export default function DetailsPage({ group, expenses }) {
 
           <button
             type='button'
+            onClick={handleShare}
             className='!mt-8 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
             Share
           </button>
+
         </div>
       </div>
 
-      <div ref={shareCardRef} className='fixed left-[-9999px] top-0'>
+      <div
+        ref={shareCardRef}
+        className='fixed inset-0 flex items-center justify-center pointer-events-none'
+        style={{ zIndex: -1 }}
+      >
         <ShareCard
           group={group}
           totalAmount={totalAmount}
