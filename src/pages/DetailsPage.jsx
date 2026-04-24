@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import SettlementList from '../components/details/SettlementList';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
@@ -8,6 +9,7 @@ import ShareCard from '../components/share/ShareCard';
 
 export default function DetailsPage({ group, expenses }) {
   const { id } = useParams();
+  const shareCardRef = useRef(null);
   const validParticipantIds = group.participants.map(
     (participant) => participant.id,
   );
@@ -81,17 +83,19 @@ export default function DetailsPage({ group, expenses }) {
         </div>
       </div>
 
-      <ShareCard
-        group={group}
-        totalAmount={totalAmount}
-        participantCount={group.participants.length}
-        averagePerPerson={
-          group.participants.length > 0
-            ? totalAmount / group.participants.length
-            : 0
-        }
-        settlements={settlements}
-      />
+      <div ref={shareCardRef} className='fixed left-[-9999px] top-0'>
+        <ShareCard
+          group={group}
+          totalAmount={totalAmount}
+          participantCount={group.participants.length}
+          averagePerPerson={
+            group.participants.length > 0
+              ? totalAmount / group.participants.length
+              : 0
+          }
+          settlements={settlements}
+        />
+      </div>
     </main>
   );
 }
