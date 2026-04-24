@@ -36,11 +36,6 @@ export default function DetailsPage({ group, expenses }) {
 
     try {
       const dataUrl = await toPng(shareCardRef.current, { cacheBust: true });
-      const downloadLink = document.createElement('a');
-      downloadLink.href = dataUrl;
-      downloadLink.download = 'fracto-summary.png';
-      downloadLink.click();
-
       const blob = await fetch(dataUrl).then((response) => response.blob());
       const file = new File([blob], 'fracto-summary.png', {
         type: 'image/png',
@@ -131,11 +126,11 @@ export default function DetailsPage({ group, expenses }) {
       </div>
 
       <div
-        ref={shareCardRef}
         className='fixed inset-0 flex items-center justify-center pointer-events-none'
         style={{ zIndex: -1 }}
       >
         <ShareCard
+          shareRef={shareCardRef}
           group={group}
           totalAmount={totalAmount}
           participantCount={group.participants.length}
