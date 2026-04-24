@@ -43,7 +43,7 @@ export default function DetailsPage({ group, expenses }) {
                 <p className='text-2xl font-semibold tracking-tight tabular-nums text-zinc-900'>
                   {totalSpent.toFixed(2)}€
                 </p>
-                <p className='mt-0.5 text-xs font-medium text-zinc-400'>
+                <p className='mt-0.5 text-sm text-zinc-500'>
                   total
                 </p>
               </div>
@@ -53,7 +53,7 @@ export default function DetailsPage({ group, expenses }) {
               {group.participants.map((participant) => (
                 <div
                   key={participant.id}
-                  className='inline-flex max-w-full items-center gap-2 text-sm text-zinc-500'
+                  className='inline-flex max-w-full items-center gap-2 text-sm font-medium text-zinc-800'
                 >
                   <span
                     className='h-2 w-2 shrink-0 rounded-full'

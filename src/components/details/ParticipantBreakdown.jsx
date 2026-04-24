@@ -33,7 +33,7 @@ export default function ParticipantBreakdown({ balances, expenses }) {
               </div>
 
               {participantExpenses.length === 0 ? (
-                <p className='mt-2 pl-6 text-sm text-zinc-400'>
+                <p className='mt-2 pl-6 text-sm text-zinc-500'>
                   No expenses yet
                 </p>
               ) : (
@@ -47,7 +47,7 @@ export default function ParticipantBreakdown({ balances, expenses }) {
                         {expense.concept}
                       </span>
 
-                      <span className='shrink-0 font-medium tabular-nums text-zinc-600'>
+                      <span className='shrink-0 font-medium tabular-nums text-zinc-500'>
                         {expense.amount.toFixed(2)}€
                       </span>
                     </div>

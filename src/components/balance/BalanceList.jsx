@@ -20,6 +20,10 @@ export default function BalanceList({
   );
 
   const participantCount = balances.length;
+  const averagePerPerson =
+    participantCount > 0
+      ? (totalPaidAmount / participantCount).toFixed(2)
+      : '0.00';
 
   const gap = 2;
   const size = 150;
@@ -59,18 +63,18 @@ export default function BalanceList({
         <div className='mb-1 flex items-center justify-between gap-3'>
           <button
             onClick={onEditGroup}
-            className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-sm text-zinc-600 hover:bg-zinc-200'
+            className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-1 text-sm text-zinc-600 hover:bg-zinc-200'
           >
             <Users className='h-4 w-4 text-zinc-600' />
             <span>{participantCount}</span>
-            <span className='text-zinc-700'>·</span>
-            <span>{Number(totalPaidAmount.toFixed(2))}€</span>
+            <span className='text-zinc-700'>/</span>
+            <span>{averagePerPerson}€</span>
           </button>
 
           <button
             type='button'
             onClick={onResetGroup}
-            className='inline-flex h-7 w-23 shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-3 text-sm text-zinc-600 transition hover:bg-zinc-200 hover:text-red-500'
+            className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-200 hover:text-red-500'
           >
             <RotateCcw className='h-4 w-4' />
             <span>Reset</span>
@@ -116,8 +120,8 @@ export default function BalanceList({
               <span className='text-2xl font-semibold tracking-tight text-zinc-900'>
                 {Number(totalPaidAmount.toFixed(2))}€
               </span>
-              <span className='text-sm uppercase tracking-wide text-zinc-500'>
-                total
+              <span className='text-medium font-semibold trackin-wide text-zinc-800'>
+                Total
               </span>
             </div>
           </div>
