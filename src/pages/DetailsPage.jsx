@@ -4,6 +4,7 @@ import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
 import AppHeader from '../components/layout/AppHeader';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
+import ShareCard from '../components/share/ShareCard';
 
 export default function DetailsPage({ group, expenses }) {
   const { id } = useParams();
@@ -21,6 +22,7 @@ export default function DetailsPage({ group, expenses }) {
     (sum, expense) => sum + expense.amount,
     0,
   );
+  const totalAmount = totalSpent;
 
   return (
     <main className='min-h-screen bg-zinc-50'>
@@ -43,9 +45,7 @@ export default function DetailsPage({ group, expenses }) {
                 <p className='text-2xl font-semibold tracking-tight tabular-nums text-zinc-900'>
                   {totalSpent.toFixed(2)}€
                 </p>
-                <p className='mt-0.5 text-sm text-zinc-500'>
-                  total
-                </p>
+                <p className='mt-0.5 text-sm text-zinc-500'>total</p>
               </div>
             </div>
 
@@ -80,6 +80,18 @@ export default function DetailsPage({ group, expenses }) {
           </button>
         </div>
       </div>
+
+      <ShareCard
+        group={group}
+        totalAmount={totalAmount}
+        participantCount={group.participants.length}
+        averagePerPerson={
+          group.participants.length > 0
+            ? totalAmount / group.participants.length
+            : 0
+        }
+        settlements={settlements}
+      />
     </main>
   );
 }
