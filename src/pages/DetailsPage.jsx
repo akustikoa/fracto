@@ -48,7 +48,7 @@ export default function DetailsPage({ group, expenses }) {
       ) {
         await navigator.share({
           title: group.name,
-          text: `View details:\n${detailsUrl}`,
+          text: `View the balance for “${group.name}” on Fracto:\n${detailsUrl}`,
           files: [file],
         });
         return;
