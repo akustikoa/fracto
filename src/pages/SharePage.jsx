@@ -1,8 +1,8 @@
-import { Fragment, useRef } from 'react';
+import { useRef } from 'react';
 import { toPng } from 'html-to-image';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
+import SettlementList from '../components/details/SettlementList';
 import ShareCard from '../components/share/ShareCard';
 import fractoLogo from '../assets/branding/fracto-logo.png';
 import { calculateBalances } from '../lib/balance.utils';
@@ -28,29 +28,6 @@ export default function SharePage({ group, expenses }) {
   const participantCount = group.participants.length;
   const averagePerPerson =
     participantCount > 0 ? totalAmount / participantCount : 0;
-  const groupedSettlements = settlements.reduce((groups, settlement) => {
-    const payerId = settlement.from.id;
-    const existingGroup = groups.find((groupItem) => groupItem.id === payerId);
-    const payment = {
-      id: `${settlement.to.id}-${settlement.amount}`,
-      receiverName: settlement.to.name,
-      amount: settlement.amount,
-    };
-
-    if (existingGroup) {
-      existingGroup.payments.push(payment);
-      return groups;
-    }
-
-    groups.push({
-      id: payerId,
-      payerName: settlement.from.name,
-      payerColor: settlement.from.color,
-      payments: [payment],
-    });
-
-    return groups;
-  }, []);
 
   const handleNewBalance = () => {
     localStorage.removeItem('fracto_group');
@@ -157,64 +134,7 @@ export default function SharePage({ group, expenses }) {
             </div>
           </header>
 
-          <section>
-            <h2 className='mb-3 ms-1 text-xl font-semibold tracking-tight text-zinc-900'>
-              Suggested payments
-            </h2>
-
-            <div className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
-              {groupedSettlements.length === 0 ? (
-                <p className='text-sm text-zinc-400'>No payments needed</p>
-              ) : (
-                <div className='divide-y divide-zinc-100'>
-                  {groupedSettlements.map((settlementGroup) => (
-                    <div
-                      key={settlementGroup.id}
-                      className='py-3 first:pt-0 last:pb-0'
-                    >
-                      <div className='grid grid-cols-[minmax(0,7rem)_minmax(0,1fr)] gap-x-3 gap-y-2'>
-                        {settlementGroup.payments.map((payment, index) => (
-                          <Fragment
-                            key={`${settlementGroup.id}-${payment.id}-${index}`}
-                          >
-                            <div className='flex min-w-0 items-center gap-2.5'>
-                              {index === 0 && (
-                                <>
-                                  <span
-                                    className='h-5 w-1.5 shrink-0 rounded-full'
-                                    style={{
-                                      backgroundColor:
-                                        settlementGroup.payerColor,
-                                    }}
-                                  />
-                                  <h3 className='truncate text-sm font-semibold text-zinc-900'>
-                                    {settlementGroup.payerName}
-                                  </h3>
-                                </>
-                              )}
-                            </div>
-
-                            <div className='flex min-w-0 items-center justify-between gap-3'>
-                              <p className='flex min-w-0 items-center gap-2 text-sm text-zinc-500'>
-                                <ArrowRight className='h-3.5 w-3.5 shrink-0 text-zinc-300' />
-                                <span className='truncate font-medium text-zinc-800'>
-                                  {payment.receiverName}
-                                </span>
-                              </p>
-
-                              <span className='shrink-0 text-sm font-semibold tabular-nums text-zinc-900'>
-                                {payment.amount.toFixed(2)}€
-                              </span>
-                            </div>
-                          </Fragment>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
+          <SettlementList settlements={settlements} />
 
           <ParticipantBreakdown
             balances={balances}
