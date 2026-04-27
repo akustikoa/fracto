@@ -32,7 +32,7 @@ export default function DetailsPage({ group, expenses }) {
       return;
     }
 
-    const detailsUrl = `${window.location.origin}/group/${group.id}`;
+    const detailsUrl = `${window.location.origin}/share/${group.id}`;
 
     try {
       const dataUrl = await toPng(shareCardRef.current, { cacheBust: true });

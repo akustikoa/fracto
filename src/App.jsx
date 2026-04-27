@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import GroupPage from './pages/GroupPage';
 import CreateGroupPage from './pages/CreateGroupPage';
 import DetailsPage from './pages/DetailsPage';
+import SharePage from './pages/SharePage';
 
 export default function App() {
   const [group, setGroup] = useState(() => {
@@ -67,6 +68,10 @@ export default function App() {
       <Route
         path='/details/:id'
         element={<DetailsPage group={group} expenses={expenses} />}
+      />
+      <Route
+        path='/share/:id'
+        element={<SharePage group={group} expenses={expenses} />}
       />
       <Route
         path='*'
