@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import fractoMark from '../assets/branding/fracto-mark.png';
+import fractoLogo from '../assets/branding/fracto-logo.png';
 import { participantColors } from '../data/participantColors';
 
 export default function CreateGroupPage({ onCreateGroup }) {
@@ -40,6 +41,16 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
   return (
     <main className='min-h-screen bg-zinc-50'>
+      <header className='border-b border-zinc-200/50 bg-[#DA3C20]'>
+        <div className='mx-auto flex h-16 max-w-3xl items-center px-4 md:px-6'>
+          <img
+            src={fractoLogo}
+            alt='Fracto'
+            className='h-8 w-auto shrink-0 object-contain'
+          />
+        </div>
+      </header>
+
       <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
         <div className='space-y-5'>
           <div className='flex flex-col items-center gap-2 text-center'>
@@ -55,7 +66,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
           <form
             onSubmit={handleSubmit}
-            className='mx-auto w-full max-w-md space-y-5 rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
+            className='w-full space-y-5 rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
           >
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-zinc-700'>

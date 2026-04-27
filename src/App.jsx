@@ -4,6 +4,7 @@ import GroupPage from './pages/GroupPage';
 import CreateGroupPage from './pages/CreateGroupPage';
 import DetailsPage from './pages/DetailsPage';
 import SharePage from './pages/SharePage';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   const [group, setGroup] = useState(() => {
@@ -42,41 +43,50 @@ export default function App() {
 
   if (!group) {
     return (
-      <Routes>
-        <Route
-          path='*'
-          element={<CreateGroupPage onCreateGroup={handleCreateGroup} />}
-        />
-      </Routes>
+      <>
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path='*'
+            element={<CreateGroupPage onCreateGroup={handleCreateGroup} />}
+          />
+        </Routes>
+      </>
     );
   }
 
   return (
-    <Routes>
-      <Route path='/' element={<Navigate to={`/group/${group.id}`} replace />} />
-      <Route
-        path='/group/:id'
-        element={
-          <GroupPage
-            group={group}
-            setGroup={setGroup}
-            expenses={expenses}
-            setExpenses={setExpenses}
-          />
-        }
-      />
-      <Route
-        path='/details/:id'
-        element={<DetailsPage group={group} expenses={expenses} />}
-      />
-      <Route
-        path='/share/:id'
-        element={<SharePage group={group} expenses={expenses} />}
-      />
-      <Route
-        path='*'
-        element={<Navigate to={`/group/${group.id}`} replace />}
-      />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route
+          path='/'
+          element={<Navigate to={`/group/${group.id}`} replace />}
+        />
+        <Route
+          path='/group/:id'
+          element={
+            <GroupPage
+              group={group}
+              setGroup={setGroup}
+              expenses={expenses}
+              setExpenses={setExpenses}
+            />
+          }
+        />
+        <Route
+          path='/details/:id'
+          element={<DetailsPage group={group} expenses={expenses} />}
+        />
+        <Route
+          path='/share/:id'
+          element={<SharePage group={group} expenses={expenses} />}
+        />
+        <Route
+          path='*'
+          element={<Navigate to={`/group/${group.id}`} replace />}
+        />
+      </Routes>
+    </>
   );
 }

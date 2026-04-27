@@ -30,8 +30,6 @@ export default function SharePage({ group, expenses }) {
     participantCount > 0 ? totalAmount / participantCount : 0;
 
   const handleNewBalance = () => {
-    localStorage.removeItem('fracto_group');
-    localStorage.removeItem('fracto_expenses');
     navigate('/');
   };
 
@@ -136,18 +134,18 @@ export default function SharePage({ group, expenses }) {
 
           <SettlementList settlements={settlements} />
 
+          <button
+            type='button'
+            onClick={handleShare}
+            className=' h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+          >
+            Share
+          </button>
+
           <ParticipantBreakdown
             balances={balances}
             expenses={filteredExpenses}
           />
-
-          <button
-            type='button'
-            onClick={handleShare}
-            className='!mt-8 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
-          >
-            Share
-          </button>
         </div>
       </div>
 
