@@ -12,6 +12,7 @@ export default function EditGroupSheet({
   onCancelPendingRemove,
   onSaveGroup,
   onCancel,
+  maxParticipants = 10,
 }) {
   return (
     <div className='space-y-6'>
@@ -83,7 +84,7 @@ export default function EditGroupSheet({
                   aria-label={`Remove ${participant.name}`}
                   className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600 disabled:opacity-40'
                 >
-                  <Trash2 className='h-4 w-4' />
+                  <Trash2 className='h-4.5 w-4.5' />
                 </button>
               </div>
             )}
@@ -91,13 +92,15 @@ export default function EditGroupSheet({
         ))}
       </div>
 
-      <button
-        type='button'
-        onClick={onAddParticipant}
-        className='h-10 w-full rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50'
-      >
-        + Add participant
-      </button>
+      {draftGroup.participants.length < maxParticipants && (
+        <button
+          type='button'
+          onClick={onAddParticipant}
+          className='h-10 w-full rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50'
+        >
+          + Add participant
+        </button>
+      )}
 
       <div className='flex gap-2'>
         <button

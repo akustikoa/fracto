@@ -104,7 +104,7 @@ export default function ParticipantSheet({
                       aria-label={`Remove ${expenseConcept}`}
                       className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600'
                     >
-                      <Trash2 className='h-4 w-4' />
+                      <Trash2 className='h-4.5 w-4.5' />
                     </button>
                   </div>
                 )}

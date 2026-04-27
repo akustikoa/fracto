@@ -1,38 +1,87 @@
 import { useState } from 'react';
+import { Trash2 } from 'lucide-react';
 import fractoMark from '../assets/branding/fracto-mark.png';
 import fractoLogo from '../assets/branding/fracto-logo.png';
 import { participantColors } from '../data/participantColors';
 
+const MAX_PARTICIPANTS = 10;
+
 export default function CreateGroupPage({ onCreateGroup }) {
   const [groupName, setGroupName] = useState('');
   const [participants, setParticipants] = useState(['', '']);
+  const [groupNameError, setGroupNameError] = useState(false);
+  const [participantErrors, setParticipantErrors] = useState([false, false]);
 
   function handleParticipantChange(index, value) {
     const updatedParticipants = [...participants];
     updatedParticipants[index] = value;
     setParticipants(updatedParticipants);
+
+    if (participantErrors[index]) {
+      const updatedParticipantErrors = [...participantErrors];
+      updatedParticipantErrors[index] = false;
+      setParticipantErrors(updatedParticipantErrors);
+    }
+  }
+
+  function handleGroupNameChange(value) {
+    setGroupName(value);
+
+    if (groupNameError) {
+      setGroupNameError(false);
+    }
   }
 
   function handleAddParticipant() {
+    if (participants.length >= MAX_PARTICIPANTS) {
+      return;
+    }
+
     setParticipants((previous) => [...previous, '']);
+    setParticipantErrors((previous) => [...previous, false]);
+  }
+
+  function handleRemoveParticipant(indexToRemove) {
+    if (participants.length <= 1) {
+      return;
+    }
+
+    setParticipants((previous) =>
+      previous.filter((_, index) => index !== indexToRemove),
+    );
+    setParticipantErrors((previous) =>
+      previous.filter((_, index) => index !== indexToRemove),
+    );
   }
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    const cleanParticipants = participants
-      .map((name) => name.trim())
-      .filter((name) => name !== '')
-      .map((name, index) => ({
-        id: crypto.randomUUID(),
-        name,
-        initial: name.charAt(0).toUpperCase(),
-        color: participantColors[index % participantColors.length],
-      }));
+    const trimmedGroupName = groupName.trim();
+    const trimmedParticipants = participants.map((name) => name.trim());
+    const nextGroupNameError = trimmedGroupName === '';
+    const nextParticipantErrors = trimmedParticipants.map((name) => name === '');
+
+    setGroupNameError(nextGroupNameError);
+    setParticipantErrors(nextParticipantErrors);
+
+    if (
+      nextGroupNameError ||
+      nextParticipantErrors.some((hasError) => hasError)
+    ) {
+      return;
+    }
+
+    const cleanParticipants = trimmedParticipants.map((name, index) => ({
+      id: crypto.randomUUID(),
+      name,
+      initial: name.charAt(0).toUpperCase(),
+      color: participantColors[index % participantColors.length],
+    }));
 
     const newGroup = {
       id: crypto.randomUUID(),
-      name: groupName.trim(),
+      name: trimmedGroupName,
       participants: cleanParticipants,
     };
 
@@ -66,6 +115,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
           <form
             onSubmit={handleSubmit}
+            noValidate
             className='w-full space-y-5 rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
           >
             <div className='space-y-2'>
@@ -75,10 +125,15 @@ export default function CreateGroupPage({ onCreateGroup }) {
               <input
                 type='text'
                 value={groupName}
-                onChange={(event) => setGroupName(event.target.value)}
-                placeholder='Mallorca 2026'
-                className='h-11 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition hover:border-zinc-200 focus:border-zinc-300'
-                required
+                onChange={(event) => handleGroupNameChange(event.target.value)}
+                placeholder={
+                  groupNameError ? 'Group name required' : 'Mallorca 2026'
+                }
+                className={`h-11 w-full rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
+                  groupNameError
+                    ? 'border-red-300 text-red-600 placeholder-red-500 hover:border-red-300 focus:border-red-400'
+                    : 'border-zinc-200/80 text-zinc-800 hover:border-zinc-200 focus:border-zinc-300'
+                }`}
               />
             </div>
 
@@ -104,20 +159,40 @@ export default function CreateGroupPage({ onCreateGroup }) {
                       onChange={(event) =>
                         handleParticipantChange(index, event.target.value)
                       }
-                      placeholder={`Participant ${index + 1}`}
-                      className='h-10 min-w-0 flex-1 rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition focus:border-zinc-300'
+                      placeholder={
+                        participantErrors[index]
+                          ? 'Participant name required'
+                          : `Participant ${index + 1}`
+                      }
+                      className={`h-10 min-w-0 flex-1 rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
+                        participantErrors[index]
+                          ? 'border-red-300 text-red-600 placeholder-red-500 focus:border-red-400'
+                          : 'border-zinc-200/80 text-zinc-800 focus:border-zinc-300'
+                      }`}
                     />
+
+                    <button
+                      type='button'
+                      onClick={() => handleRemoveParticipant(index)}
+                      disabled={participants.length <= 1}
+                      aria-label={`Remove participant ${index + 1}`}
+                      className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600 disabled:opacity-40'
+                    >
+                      <Trash2 className='h-4.5 w-4.5' />
+                    </button>
                   </div>
                 ))}
               </div>
 
-              <button
-                type='button'
-                onClick={handleAddParticipant}
-                className='h-10 w-full rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50'
-              >
-                + Add participant
-              </button>
+              {participants.length < MAX_PARTICIPANTS && (
+                <button
+                  type='button'
+                  onClick={handleAddParticipant}
+                  className='h-10 w-full rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50'
+                >
+                  + Add participant
+                </button>
+              )}
             </div>
 
             <button

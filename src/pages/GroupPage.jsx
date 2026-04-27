@@ -12,6 +12,8 @@ import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
 import AppHeader from '../components/layout/AppHeader';
 
+const MAX_PARTICIPANTS = 10;
+
 export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const navigate = useNavigate();
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
@@ -140,6 +142,10 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
   function handleAddParticipant() {
     setDraftGroup((currentGroup) => {
+      if (currentGroup.participants.length >= MAX_PARTICIPANTS) {
+        return currentGroup;
+      }
+
       const nextIndex = currentGroup.participants.length;
 
       return {
@@ -399,6 +405,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
                     onCancelPendingRemove={() => setPendingRemoveId(null)}
                     onSaveGroup={handleSaveGroup}
                     onCancel={handleCloseSheet}
+                    maxParticipants={MAX_PARTICIPANTS}
                   />
                 ) : selectedParticipant ? (
                   <ParticipantSheet
