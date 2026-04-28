@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { ArrowRight } from 'lucide-react';
-import fractoLogo from '../../assets/branding/fracto-logo.png';
+import fractoLogo from '../../assets/branding/fracto-logo-orange-chrome.png';
 
 export default function ShareCard({
   shareRef,
@@ -20,7 +20,9 @@ export default function ShareCard({
       return participantValue;
     }
 
-    return participants.find((participant) => participant.id === participantValue);
+    return participants.find(
+      (participant) => participant.id === participantValue,
+    );
   };
 
   const getParticipantName = (participantValue) =>
@@ -126,9 +128,7 @@ export default function ShareCard({
                             <Fragment
                               key={`${settlementGroup.id}-${payment.id}-${index}`}
                             >
-                              <div
-                                className='flex min-w-0 items-center gap-2.5'
-                              >
+                              <div className='flex min-w-0 items-center gap-2.5'>
                                 {index === 0 && (
                                   <>
                                     <span
@@ -145,9 +145,7 @@ export default function ShareCard({
                                 )}
                               </div>
 
-                              <div
-                                className='flex min-w-0 items-center justify-between gap-3'
-                              >
+                              <div className='flex min-w-0 items-center justify-between gap-3'>
                                 <p className='flex min-w-0 items-center gap-2 text-sm text-zinc-500'>
                                   <ArrowRight className='h-3.5 w-3.5 shrink-0 text-zinc-300' />
                                   <span className='truncate font-medium text-zinc-800'>

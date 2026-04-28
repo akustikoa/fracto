@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
-import fractoMark from '../assets/branding/fracto-mark.png';
-import fractoLogo from '../assets/branding/fracto-logo.png';
+import fractoMark from '../assets/branding/fracto-markround-chrome.png';
+import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { participantColors } from '../data/participantColors';
 
 const MAX_PARTICIPANTS = 10;
@@ -60,7 +60,9 @@ export default function CreateGroupPage({ onCreateGroup }) {
     const trimmedGroupName = groupName.trim();
     const trimmedParticipants = participants.map((name) => name.trim());
     const nextGroupNameError = trimmedGroupName === '';
-    const nextParticipantErrors = trimmedParticipants.map((name) => name === '');
+    const nextParticipantErrors = trimmedParticipants.map(
+      (name) => name === '',
+    );
 
     setGroupNameError(nextGroupNameError);
     setParticipantErrors(nextParticipantErrors);
@@ -90,7 +92,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
   return (
     <main className='min-h-screen bg-zinc-50'>
-      <header className='border-b border-zinc-200/50 bg-[#DA3C20]'>
+      <header className='mb-4 border-b border-zinc-200/50 bg-[#DA3C20]'>
         <div className='mx-auto flex h-16 max-w-3xl items-center px-4 md:px-6'>
           <img
             src={fractoLogo}
@@ -101,8 +103,8 @@ export default function CreateGroupPage({ onCreateGroup }) {
       </header>
 
       <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
-        <div className='space-y-5'>
-          <div className='flex flex-col items-center gap-2 text-center'>
+        <div className='space-y-6'>
+          <div className='flex flex-col items-center gap-4 text-center'>
             <img
               src={fractoMark}
               alt='Fracto'
@@ -188,7 +190,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                 <button
                   type='button'
                   onClick={handleAddParticipant}
-                  className='h-10 w-full rounded-xl border border-dashed border-zinc-300 text-sm font-medium text-zinc-600 transition hover:bg-zinc-50'
+                  className='h-10 w-full rounded-xl bg-zinc-100 px-4 text-sm font-medium text-zinc-600 transition hover:bg-zinc-800'
                 >
                   + Add participant
                 </button>

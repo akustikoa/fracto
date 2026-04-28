@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
 import SettlementList from '../components/details/SettlementList';
 import ShareCard from '../components/share/ShareCard';
-import fractoLogo from '../assets/branding/fracto-logo.png';
+import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 

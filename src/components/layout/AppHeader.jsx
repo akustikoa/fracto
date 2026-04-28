@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import fractoLogo from '../../assets/branding/fracto-logo.png';
+import fractoLogo from '../../assets/branding/fracto-logo-orange-chrome.png';
 
 export default function AppHeader({ groupId, variant }) {
   const navigate = useNavigate();
