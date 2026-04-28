@@ -4,8 +4,13 @@ import { X } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
-import { getGroupById } from '../lib/api/groups';
-import { createExpense, getExpensesByGroupId } from '../lib/api/expenses';
+import { getGroupById, updateGroup } from '../lib/api/groups';
+import {
+  createExpense,
+  deleteExpense,
+  getExpensesByGroupId,
+  updateExpense,
+} from '../lib/api/expenses';
 
 import GroupHeader from '../components/group/GroupHeader';
 import EditGroupSheet from '../components/group/EditGroupSheet';
@@ -15,6 +20,7 @@ import ExpenseInput from '../components/expense/ExpenseInput';
 import AppHeader from '../components/layout/AppHeader';
 
 const MAX_PARTICIPANTS = 10;
+
 
 export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const navigate = useNavigate();
@@ -216,7 +222,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     setPendingRemoveId(null);
   }
 
-  function handleSaveGroup() {
+  async function handleSaveGroup() {
     const trimmedGroupName = draftGroup.name.trim();
     const updatedParticipants = draftGroup.participants.map((participant) => {
       const trimmedName = participant.name.trim();
@@ -236,11 +242,13 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       return;
     }
 
-    setGroup({
+    const updatedGroup = await updateGroup({
       ...draftGroup,
       name: trimmedGroupName,
       participants: updatedParticipants,
     });
+
+    setGroup(updatedGroup);
     handleCloseSheet();
   }
 
@@ -277,7 +285,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     setPendingRemoveExpenseId(null);
   }
 
-  function handleSaveParticipantExpenses() {
+  async function handleSaveParticipantExpenses() {
     const hasInvalidExpense = draftParticipantExpenses.some((expense) => {
       const parsedAmount = parseFloat(expense.amount);
 
@@ -308,15 +316,32 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
       }),
     );
 
+    const participantExpenses = expenses.filter(
+      (expense) => expense.paidBy === selectedParticipantId,
+    );
+    const removedExpenses = participantExpenses.filter(
+      (expense) => !normalizedExpenseById.has(expense.id),
+    );
+    const updatedExpenses = await Promise.all(
+      [...normalizedExpenseById.values()].map(updateExpense),
+    );
+    const updatedExpenseById = new Map(
+      updatedExpenses.map((expense) => [expense.id, expense]),
+    );
+
+    await Promise.all(
+      removedExpenses.map((expense) => deleteExpense(expense.id)),
+    );
+
     setExpenses((previousExpenses) =>
       previousExpenses.flatMap((expense) => {
         if (expense.paidBy !== selectedParticipantId) {
           return [expense];
         }
 
-        const normalizedExpense = normalizedExpenseById.get(expense.id);
+        const updatedExpense = updatedExpenseById.get(expense.id);
 
-        return normalizedExpense ? [normalizedExpense] : [];
+        return updatedExpense ? [updatedExpense] : [];
       }),
     );
 

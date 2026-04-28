@@ -18,6 +18,24 @@ export async function createGroup(group) {
   return data;
 }
 
+export async function updateGroup(group) {
+  const { data, error } = await supabase
+    .from('groups')
+    .update({
+      name: group.name,
+      participants: group.participants,
+    })
+    .eq('id', group.id)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
 export async function getGroupById(id) {
   const { data, error } = await supabase
     .from('groups')

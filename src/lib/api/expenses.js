@@ -32,6 +32,38 @@ export async function createExpense(expense) {
   return mapExpenseRow(data);
 }
 
+export async function updateExpense(expense) {
+  const { data, error } = await supabase
+    .from('expenses')
+    .update({
+      group_id: expense.groupId,
+      paid_by: expense.paidBy,
+      concept: expense.concept,
+      amount: expense.amount,
+      date: expense.date,
+    })
+    .eq('id', expense.id)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return mapExpenseRow(data);
+}
+
+export async function deleteExpense(expenseId) {
+  const { error } = await supabase
+    .from('expenses')
+    .delete()
+    .eq('id', expenseId);
+
+  if (error) {
+    throw error;
+  }
+}
+
 export async function getExpensesByGroupId(groupId) {
   const { data, error } = await supabase
     .from('expenses')
