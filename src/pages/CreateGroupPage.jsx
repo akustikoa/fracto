@@ -1,12 +1,15 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Trash2 } from 'lucide-react';
 import fractoMark from '../assets/branding/fracto-markround-chrome.png';
 import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { participantColors } from '../data/participantColors';
+import { createGroup } from '../lib/api/groups';
 
 const MAX_PARTICIPANTS = 10;
 
 export default function CreateGroupPage({ onCreateGroup }) {
+  const navigate = useNavigate();
   const [groupName, setGroupName] = useState('');
   const [participants, setParticipants] = useState(['', '']);
   const [groupNameError, setGroupNameError] = useState(false);
@@ -54,7 +57,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
     );
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     const trimmedGroupName = groupName.trim();
@@ -87,7 +90,10 @@ export default function CreateGroupPage({ onCreateGroup }) {
       participants: cleanParticipants,
     };
 
-    onCreateGroup(newGroup);
+    const createdGroup = await createGroup(newGroup);
+
+    onCreateGroup(createdGroup);
+    navigate(`/group/${createdGroup.id}`);
   }
 
   return (

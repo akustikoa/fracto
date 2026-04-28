@@ -1,16 +1,40 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
 import SettlementList from '../components/details/SettlementList';
 import ShareCard from '../components/share/ShareCard';
 import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
+import { getGroupById } from '../lib/api/groups';
+import { getExpensesByGroupId } from '../lib/api/expenses';
 
-export default function SharePage({ group, expenses }) {
+export default function SharePage() {
   const shareCardRef = useRef(null);
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [group, setGroup] = useState(null);
+  const [expenses, setExpenses] = useState([]);
+
+  useEffect(() => {
+    async function loadShareData() {
+      const [loadedGroup, loadedExpenses] = await Promise.all([
+        getGroupById(id),
+        getExpensesByGroupId(id),
+      ]);
+
+      setGroup(loadedGroup);
+      setExpenses(loadedExpenses);
+    }
+
+    loadShareData();
+  }, [id]);
+
+  if (!group) {
+    return null;
+  }
+
   const validParticipantIds = group.participants.map(
     (participant) => participant.id,
   );

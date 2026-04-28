@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import { useParams } from 'react-router-dom';
 import SettlementList from '../components/details/SettlementList';
@@ -7,10 +7,33 @@ import AppHeader from '../components/layout/AppHeader';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import ShareCard from '../components/share/ShareCard';
+import { getGroupById } from '../lib/api/groups';
+import { getExpensesByGroupId } from '../lib/api/expenses';
 
-export default function DetailsPage({ group, expenses }) {
+export default function DetailsPage() {
   const { id } = useParams();
   const shareCardRef = useRef(null);
+  const [group, setGroup] = useState(null);
+  const [expenses, setExpenses] = useState([]);
+
+  useEffect(() => {
+    async function loadDetailsData() {
+      const [loadedGroup, loadedExpenses] = await Promise.all([
+        getGroupById(id),
+        getExpensesByGroupId(id),
+      ]);
+
+      setGroup(loadedGroup);
+      setExpenses(loadedExpenses);
+    }
+
+    loadDetailsData();
+  }, [id]);
+
+  if (!group) {
+    return null;
+  }
+
   const validParticipantIds = group.participants.map(
     (participant) => participant.id,
   );

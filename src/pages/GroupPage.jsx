@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
+import { getGroupById } from '../lib/api/groups';
+import { createExpense, getExpensesByGroupId } from '../lib/api/expenses';
 
 import GroupHeader from '../components/group/GroupHeader';
 import EditGroupSheet from '../components/group/EditGroupSheet';
@@ -16,6 +18,7 @@ const MAX_PARTICIPANTS = 10;
 
 export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [draftGroup, setDraftGroup] = useState(null);
@@ -24,6 +27,24 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
   const [pendingRemoveExpenseId, setPendingRemoveExpenseId] = useState(null);
   const [draftParticipantExpenses, setDraftParticipantExpenses] = useState([]);
+
+  useEffect(() => {
+    async function loadGroup() {
+      const [loadedGroup, loadedExpenses] = await Promise.all([
+        getGroupById(id),
+        getExpensesByGroupId(id),
+      ]);
+
+      setGroup(loadedGroup);
+      setExpenses(loadedExpenses);
+    }
+
+    loadGroup();
+  }, [id, setExpenses, setGroup]);
+
+  if (!group) {
+    return null;
+  }
 
   const validParticipantIds = group.participants.map((p) => p.id);
 
@@ -47,8 +68,13 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     0,
   );
 
-  function handleAddExpense(newExpense) {
-    setExpenses((previousExpenses) => [...previousExpenses, newExpense]);
+  async function handleAddExpense(newExpense) {
+    const createdExpense = await createExpense({
+      ...newExpense,
+      groupId: id,
+    });
+
+    setExpenses((previousExpenses) => [...previousExpenses, createdExpense]);
   }
 
   function handleResetRequest() {
@@ -63,8 +89,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   }
 
   function handleResetGroup() {
-    localStorage.removeItem('fracto_group');
-    localStorage.removeItem('fracto_expenses');
     setGroup(null);
     setExpenses([]);
     navigate('/');
