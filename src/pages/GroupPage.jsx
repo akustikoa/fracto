@@ -303,6 +303,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     draftGroup?.name.trim() &&
     draftGroup.participants.length > 0 &&
     draftGroup.participants.every((participant) => participant.name.trim());
+    
 
   return (
     <main className='min-h-screen bg-zinc-50'>
