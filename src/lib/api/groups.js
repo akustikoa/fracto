@@ -36,6 +36,14 @@ export async function updateGroup(group) {
   return data;
 }
 
+export async function deleteGroup(groupId) {
+  const { error } = await supabase.from('groups').delete().eq('id', groupId);
+
+  if (error) {
+    throw error;
+  }
+}
+
 export async function getGroupById(id) {
   const { data, error } = await supabase
     .from('groups')

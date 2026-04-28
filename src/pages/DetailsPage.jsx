@@ -137,14 +137,13 @@ export default function DetailsPage() {
             onClick={handleShare}
             className='h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
-            Share
+            Share balance
           </button>
 
           <ParticipantBreakdown
             balances={balances}
             expenses={filteredExpenses}
           />
-
         </div>
       </div>
 

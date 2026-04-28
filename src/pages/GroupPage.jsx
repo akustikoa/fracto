@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
-import { getGroupById, updateGroup } from '../lib/api/groups';
+import { deleteGroup, getGroupById, updateGroup } from '../lib/api/groups';
 import {
   createExpense,
   deleteExpense,
@@ -94,7 +94,9 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     setIsSheetOpen(true);
   }
 
-  function handleResetGroup() {
+  async function handleResetGroup() {
+    await deleteGroup(group.id);
+
     setGroup(null);
     setExpenses([]);
     navigate('/');

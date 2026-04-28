@@ -59,7 +59,7 @@ export default function SharePage() {
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/share/${group.id}`;
-    const shareText = `View the balance for “${group.name}” on Fracto:\n${shareUrl}`;
+    const shareText = `Balance for “${group.name}”:\n\nWho pays who:\n${shareUrl}`;
 
     if (!shareCardRef.current) {
       await navigator.clipboard.writeText(shareUrl);
