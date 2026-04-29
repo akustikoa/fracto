@@ -111,15 +111,18 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
       <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
         <div className='space-y-6'>
-          <div className='flex flex-col items-center gap-4 text-center'>
+          <div className='flex flex-col items-center text-center'>
             <img
               src={fractoMark}
               alt='Fracto'
-              className='h-18 w-18 object-contain'
+              className='h-18 w-18 mb-3 object-contain'
             />
-            <h1 className='text-3xl font-semibold tracking-tight text-zinc-900 leading-tight'>
-              Create group
+            <h1 className='text-4xl font-semibold tracking-tight text-zinc-900 leading-tight'>
+              Create balance
             </h1>
+            <p className=' mb-4 text-center text-sm  text-zinc-500'>
+              Add expenses and see who owes who
+            </p>
           </div>
 
           <form
@@ -129,7 +132,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
           >
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-zinc-700'>
-                Group name
+                Name your balance
               </label>
               <input
                 type='text'
@@ -208,7 +211,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
               type='submit'
               className='h-10 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition  hover:bg-zinc-800 hover:text-white'
             >
-              Create group
+              Create balance
             </button>
           </form>
 
