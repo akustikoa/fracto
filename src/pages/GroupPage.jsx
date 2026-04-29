@@ -43,6 +43,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
 
       setGroup(loadedGroup);
       setExpenses(loadedExpenses);
+      localStorage.setItem('lastGroupId', id);
     }
 
     loadGroup();

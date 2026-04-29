@@ -14,6 +14,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
   const [participants, setParticipants] = useState(['', '']);
   const [groupNameError, setGroupNameError] = useState(false);
   const [participantErrors, setParticipantErrors] = useState([false, false]);
+  const [lastGroupId] = useState(() => localStorage.getItem('lastGroupId'));
 
   function handleParticipantChange(index, value) {
     const updatedParticipants = [...participants];
@@ -210,6 +211,16 @@ export default function CreateGroupPage({ onCreateGroup }) {
               Create group
             </button>
           </form>
+
+          {lastGroupId && (
+            <button
+              type='button'
+              onClick={() => navigate(`/group/${lastGroupId}`)}
+              className='h-10 w-full rounded-xl border border-zinc-200 bg-zinc-100 px-4 text-sm font-medium text-zinc-600 transition hover:bg-zinc-200 hover:text-zinc-900'
+            >
+              Continue last balance
+            </button>
+          )}
         </div>
       </div>
     </main>
