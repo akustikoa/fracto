@@ -98,6 +98,7 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   async function handleResetGroup() {
     await deleteGroup(group.id);
 
+    localStorage.removeItem('lastGroupId');
     setGroup(null);
     setExpenses([]);
     navigate('/');

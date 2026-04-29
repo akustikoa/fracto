@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trash2 } from 'lucide-react';
+import { RotateCcw, Trash2 } from 'lucide-react';
 import fractoMark from '../assets/branding/fracto-markround-chrome.png';
 import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { participantColors } from '../data/participantColors';
@@ -213,13 +213,16 @@ export default function CreateGroupPage({ onCreateGroup }) {
           </form>
 
           {lastGroupId && (
-            <button
-              type='button'
-              onClick={() => navigate(`/group/${lastGroupId}`)}
-              className='h-10 w-full rounded-xl border border-zinc-200 bg-zinc-100 px-4 text-sm font-medium text-zinc-600 transition hover:bg-zinc-200 hover:text-zinc-900'
-            >
-              Continue last balance
-            </button>
+            <div className='flex justify-center'>
+              <button
+                type='button'
+                onClick={() => navigate(`/group/${lastGroupId}`)}
+                className='inline-flex h-8 items-center justify-center gap-2 border border-zinc-200 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-900 hover:text-white'
+              >
+                <RotateCcw className='h-4 w-4' />
+                <span>Continue last balance</span>
+              </button>
+            </div>
           )}
         </div>
       </div>
