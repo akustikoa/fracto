@@ -64,18 +64,18 @@ export default function BalanceList({
         <div className='mb-1 flex items-center justify-between gap-3'>
           <button
             onClick={onEditGroup}
-            className='inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-1 text-sm text-zinc-600 hover:bg-zinc-200'
+            className='group inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-1 text-sm text-zinc-600 hover:bg-zinc-900 hover:text-white'
           >
-            <Users className='h-4 w-4 text-zinc-600' />
+            <Users className='h-4 w-4' />
             <span>{participantCount}</span>
             <span className='text-zinc-700'>/</span>
-            <span>{averagePerPerson}€</span>
+            <span>{averagePerPerson}€ each</span>
           </button>
 
           <button
             type='button'
             onClick={onResetGroup}
-            className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-200 hover:text-red-500'
+            className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-900 hover:text-white'
           >
             <RotateCcw className='h-4 w-4' />
             <span>Reset</span>

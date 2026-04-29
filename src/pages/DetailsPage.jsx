@@ -9,6 +9,7 @@ import { calculateSettlements } from '../lib/settlement.utils';
 import ShareCard from '../components/share/ShareCard';
 import { getGroupById } from '../lib/api/groups';
 import { getExpensesByGroupId } from '../lib/api/expenses';
+import { Share2 } from 'lucide-react';
 
 export default function DetailsPage() {
   const { id } = useParams();
@@ -135,8 +136,9 @@ export default function DetailsPage() {
           <button
             type='button'
             onClick={handleShare}
-            className='h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+            className='flex items-center justify-center gap-4 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
+            <Share2 className='h-5 w-5 shrink-0' />
             Share balance
           </button>
 

@@ -135,7 +135,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                 value={groupName}
                 onChange={(event) => handleGroupNameChange(event.target.value)}
                 placeholder={
-                  groupNameError ? 'Group name required' : 'Mallorca 2026'
+                  groupNameError ? 'Group name required' : 'Dinner with friends'
                 }
                 className={`h-11 w-full rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
                   groupNameError
@@ -170,7 +170,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                       placeholder={
                         participantErrors[index]
                           ? 'Participant name required'
-                          : `Participant ${index + 1}`
+                          : `Name ${index + 1}`
                       }
                       className={`h-10 min-w-0 flex-1 rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
                         participantErrors[index]
@@ -196,7 +196,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                 <button
                   type='button'
                   onClick={handleAddParticipant}
-                  className='h-10 w-full rounded-xl bg-zinc-100 px-4 text-sm font-medium text-zinc-600 transition hover:bg-zinc-800'
+                  className='h-10 w-full border border-zinc-200 rounded-xl bg-zinc-100 px-4 text-sm font-medium text-zinc-600 transition hover:bg-zinc-800 hover:text-white'
                 >
                   + Add participant
                 </button>
@@ -205,7 +205,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
             <button
               type='submit'
-              className='h-10 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+              className='h-10 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition  hover:bg-zinc-800 hover:text-white'
             >
               Create group
             </button>

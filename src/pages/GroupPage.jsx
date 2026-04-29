@@ -18,9 +18,9 @@ import ParticipantSheet from '../components/group/ParticipantSheet';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
 import AppHeader from '../components/layout/AppHeader';
+import { FileCheckCorner } from 'lucide-react';
 
 const MAX_PARTICIPANTS = 10;
-
 
 export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const navigate = useNavigate();
@@ -354,7 +354,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
     draftGroup?.name.trim() &&
     draftGroup.participants.length > 0 &&
     draftGroup.participants.every((participant) => participant.name.trim());
-    
 
   return (
     <main className='min-h-screen bg-zinc-50'>
@@ -374,8 +373,9 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
               <button
                 type='button'
                 onClick={() => navigate(`/details/${group.id}`)}
-                className='h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800'
+                className='flex items-center justify-center gap-3 h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800'
               >
+                <FileCheckCorner className='h-5 w-5 shrink-0' />
                 Review & share
               </button>
             }
