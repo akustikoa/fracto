@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { X } from 'lucide-react';
+import { FileCheckCorner, X } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
-import { deleteGroup, getGroupById, updateGroup } from '../lib/api/groups';
+import { deleteGroup, updateGroup } from '../lib/api/groups';
 import {
   createExpense,
   deleteExpense,
-  getExpensesByGroupId,
   updateExpense,
 } from '../lib/api/expenses';
+import { useGroupData } from '../hooks/useGroupData';
 
 import GroupHeader from '../components/group/GroupHeader';
 import EditGroupSheet from '../components/group/EditGroupSheet';
@@ -18,13 +18,13 @@ import ParticipantSheet from '../components/group/ParticipantSheet';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
 import AppHeader from '../components/layout/AppHeader';
-import { FileCheckCorner } from 'lucide-react';
 
 const MAX_PARTICIPANTS = 10;
 
-export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
+export default function GroupPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { group, setGroup, expenses, setExpenses } = useGroupData(id);
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
   const [draftGroup, setDraftGroup] = useState(null);
@@ -33,21 +33,6 @@ export default function GroupPage({ group, setGroup, expenses, setExpenses }) {
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
   const [pendingRemoveExpenseId, setPendingRemoveExpenseId] = useState(null);
   const [draftParticipantExpenses, setDraftParticipantExpenses] = useState([]);
-
-  useEffect(() => {
-    async function loadGroup() {
-      const [loadedGroup, loadedExpenses] = await Promise.all([
-        getGroupById(id),
-        getExpensesByGroupId(id),
-      ]);
-
-      setGroup(loadedGroup);
-      setExpenses(loadedExpenses);
-      localStorage.setItem('lastGroupId', id);
-    }
-
-    loadGroup();
-  }, [id, setExpenses, setGroup]);
 
   if (!group) {
     return null;
