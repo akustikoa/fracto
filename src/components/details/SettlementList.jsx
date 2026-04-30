@@ -1,11 +1,14 @@
 import { Fragment } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '../../context/useLanguage';
 
 export default function SettlementList({
   settlements,
   titleClassName = 'mb-3 ms-1 text-xl font-semibold tracking-tight text-zinc-900',
   containerClassName = 'rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]',
 }) {
+  const { t } = useLanguage();
+
   const groupedSettlements = settlements.reduce((groups, settlement) => {
     const payerId = settlement.from.id;
     const existingGroup = groups.find((groupItem) => groupItem.id === payerId);
@@ -32,11 +35,11 @@ export default function SettlementList({
 
   return (
     <section>
-      <h2 className={titleClassName}>Suggested payments</h2>
+      <h2 className={titleClassName}>{t('suggestedPayments')}</h2>
 
       <div className={containerClassName}>
         {groupedSettlements.length === 0 ? (
-          <p className='text-sm text-zinc-400'>No payments needed</p>
+          <p className='text-sm text-zinc-400'>{t('noPaymentsNeeded')}</p>
         ) : (
           <div className='divide-y divide-zinc-100'>
             {groupedSettlements.map((settlementGroup) => (

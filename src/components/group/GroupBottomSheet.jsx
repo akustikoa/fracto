@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import EditGroupSheet from './EditGroupSheet';
 import ParticipantSheet from './ParticipantSheet';
+import { useLanguage } from '../../context/useLanguage';
 
 export default function GroupBottomSheet({
   isOpen,
@@ -31,6 +32,8 @@ export default function GroupBottomSheet({
   onExpenseDraftAmountChange,
   onSaveParticipantExpenses,
 }) {
+  const { t } = useLanguage();
+
   if (!selectedParticipant && !isEditingGroup && !isConfirmingReset) {
     return null;
   }
@@ -54,7 +57,7 @@ export default function GroupBottomSheet({
           <button
             type='button'
             onClick={onClose}
-            aria-label='Close sheet'
+            aria-label={t('closeSheet')}
             className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900'
           >
             <X className='h-5 w-5' />
@@ -65,11 +68,11 @@ export default function GroupBottomSheet({
           <div className='space-y-6'>
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-zinc-700'>
-                Delete group
+                {t('deleteGroup')}
               </label>
               <p className='text-sm leading-6 text-zinc-600'>
-                Do you want to delete group {groupName} and all expenses? This
-                action cannot be undone.
+                {t('deleteGroupPromptStart')} {groupName}{' '}
+                {t('deleteGroupPromptEnd')}
               </p>
             </div>
 
@@ -79,14 +82,14 @@ export default function GroupBottomSheet({
                 onClick={onResetGroup}
                 className='h-10 flex-1 rounded-xl bg-red-600 px-4 text-sm font-medium text-white transition hover:bg-red-500'
               >
-                Delete group
+                {t('deleteGroup')}
               </button>
               <button
                 type='button'
                 onClick={onClose}
                 className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
               >
-                Cancel
+                {t('cancel')}
               </button>
             </div>
           </div>

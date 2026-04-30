@@ -9,11 +9,13 @@ import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { getGroupById } from '../lib/api/groups';
 import { getExpensesByGroupId } from '../lib/api/expenses';
+import { useLanguage } from '../context/useLanguage';
 
 export default function SharePage() {
   const shareCardRef = useRef(null);
   const navigate = useNavigate();
   const { id } = useParams();
+  const { t } = useLanguage();
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);
 
@@ -59,7 +61,9 @@ export default function SharePage() {
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/share/${group.id}`;
-    const shareText = `Balance for “${group.name}”:\n\nWho pays who:\n${shareUrl}`;
+    const shareText = `${t('shareTextBalanceFor')} "${group.name}":\n\n${t(
+      'shareTextWhoPaysWho',
+    )}\n${shareUrl}`;
 
     if (!shareCardRef.current) {
       await navigator.clipboard.writeText(shareUrl);
@@ -113,7 +117,7 @@ export default function SharePage() {
             onClick={handleNewBalance}
             className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
           >
-            New balance
+            {t('newBalance')}
           </button>
         </div>
       </header>
@@ -127,8 +131,8 @@ export default function SharePage() {
                   {group.name}
                 </h1>
                 <p className='mt-0.5 text-sm text-zinc-500'>
-                  {participantCount} participants /{' '}
-                  {averagePerPerson.toFixed(2)}€ each
+                  {participantCount} {t('participants')} /{' '}
+                  {averagePerPerson.toFixed(2)}€ {t('each')}
                 </p>
               </div>
 
@@ -136,7 +140,7 @@ export default function SharePage() {
                 <p className='text-2xl font-semibold tracking-tight tabular-nums text-zinc-900'>
                   {totalAmount.toFixed(2)}€
                 </p>
-                <p className='mt-0.5 text-sm text-zinc-500'>total</p>
+                <p className='mt-0.5 text-sm text-zinc-500'>{t('total')}</p>
               </div>
             </div>
 
@@ -163,7 +167,7 @@ export default function SharePage() {
             onClick={handleShare}
             className=' h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
-            Share
+            {t('share')}
           </button>
 
           <ParticipantBreakdown

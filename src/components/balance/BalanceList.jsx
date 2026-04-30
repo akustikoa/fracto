@@ -1,5 +1,6 @@
 import { RotateCcw, Users } from 'lucide-react';
 import SettlementList from '../details/SettlementList';
+import { useLanguage } from '../../context/useLanguage';
 
 export default function BalanceList({
   balances,
@@ -10,6 +11,7 @@ export default function BalanceList({
   footerAction,
   children,
 }) {
+  const { t } = useLanguage();
   const sortedBalances = [...balances].sort(
     (firstBalance, secondBalance) =>
       secondBalance.balance - firstBalance.balance,
@@ -58,7 +60,9 @@ export default function BalanceList({
 
   return (
     <div>
-      <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>Balance</h2>
+      <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>
+        {t('balance')}
+      </h2>
 
       <section className='rounded-2xl border border-zinc-200/80 bg-white/95 px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
         <div className='mb-1 flex items-center justify-between gap-3'>
@@ -69,7 +73,9 @@ export default function BalanceList({
             <Users className='h-4 w-4' />
             <span>{participantCount}</span>
             <span className='text-zinc-700'>/</span>
-            <span>{averagePerPerson}€ each</span>
+            <span>
+              {averagePerPerson}€ {t('each')}
+            </span>
           </button>
 
           <button
@@ -78,7 +84,7 @@ export default function BalanceList({
             className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-900 hover:text-white'
           >
             <RotateCcw className='h-4 w-4' />
-            <span>Reset</span>
+            <span>{t('reset')}</span>
           </button>
         </div>
 
@@ -122,7 +128,7 @@ export default function BalanceList({
                 {Number(totalPaidAmount.toFixed(2))}€
               </span>
               <span className='text-medium font-semibold trackin-wide text-zinc-800'>
-                Total
+                {t('total')}
               </span>
             </div>
           </div>
@@ -157,7 +163,7 @@ export default function BalanceList({
                 </p>
 
                 <p className='mt-0.5 text-xs text-zinc-400'>
-                  paid {totalPaid.toFixed(2)}€
+                  {t('paid')} {totalPaid.toFixed(2)}€
                 </p>
               </div>
             </button>

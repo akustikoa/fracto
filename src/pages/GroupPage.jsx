@@ -17,12 +17,14 @@ import GroupBottomSheet from '../components/group/GroupBottomSheet';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
 import AppHeader from '../components/layout/AppHeader';
+import { useLanguage } from '../context/useLanguage';
 
 const MAX_PARTICIPANTS = 10;
 
 export default function GroupPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { t } = useLanguage();
   const { group, setGroup, expenses, setExpenses } = useGroupData(id);
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [isEditingGroup, setIsEditingGroup] = useState(false);
@@ -172,7 +174,7 @@ export default function GroupPage() {
           ...currentGroup.participants,
           {
             id: crypto.randomUUID(),
-            name: 'New participant',
+            name: t('newParticipant'),
             initial: 'N',
             color: participantColors[nextIndex % participantColors.length],
           },
@@ -362,7 +364,7 @@ export default function GroupPage() {
                 className='flex items-center justify-center gap-3 h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800'
               >
                 <FileCheckCorner className='h-5 w-5 shrink-0' />
-                Review & share
+                {t('reviewAndShare')}
               </button>
             }
           >

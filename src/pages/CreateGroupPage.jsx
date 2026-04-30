@@ -5,11 +5,14 @@ import fractoMark from '../assets/branding/fracto-markround-chrome.png';
 import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { participantColors } from '../data/participantColors';
 import { createGroup } from '../lib/api/groups';
+import { useLanguage } from '../context/useLanguage';
+import LanguageSelector from '../components/layout/LanguageSelector';
 
 const MAX_PARTICIPANTS = 10;
 
 export default function CreateGroupPage({ onCreateGroup }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [groupName, setGroupName] = useState('');
   const [participants, setParticipants] = useState(['', '']);
   const [groupNameError, setGroupNameError] = useState(false);
@@ -100,12 +103,13 @@ export default function CreateGroupPage({ onCreateGroup }) {
   return (
     <main className='min-h-screen bg-zinc-50'>
       <header className='mb-4 border-b border-zinc-200/50 bg-[#DA3C20]'>
-        <div className='mx-auto flex h-16 max-w-3xl items-center px-4 md:px-6'>
+        <div className='mx-auto flex h-16 max-w-3xl items-center justify-between px-4 md:px-6'>
           <img
             src={fractoLogo}
             alt='Fracto'
             className='h-8 w-auto shrink-0 object-contain'
           />
+          <LanguageSelector />
         </div>
       </header>
 
@@ -118,10 +122,10 @@ export default function CreateGroupPage({ onCreateGroup }) {
               className='h-18 w-18 mb-3 object-contain'
             />
             <h1 className='text-4xl font-semibold tracking-tight text-zinc-900 leading-tight'>
-              Create group
+              {t('createBalance')}
             </h1>
             <p className=' mb-4 text-center text-  text-zinc-500'>
-              Add expenses and see who owes who
+              {t('groupIntro')}
             </p>
           </div>
 
@@ -132,14 +136,14 @@ export default function CreateGroupPage({ onCreateGroup }) {
           >
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-zinc-700'>
-                Group name
+                {t('balanceName')}
               </label>
               <input
                 type='text'
                 value={groupName}
                 onChange={(event) => handleGroupNameChange(event.target.value)}
                 placeholder={
-                  groupNameError ? 'Group name required' : 'Barcelona weekend'
+                  groupNameError ? t('groupNameRequired') : t('barcelonaWeekend')
                 }
                 className={`h-11 w-full rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
                   groupNameError
@@ -151,7 +155,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-zinc-700'>
-                Participants
+                {t('participants')}
               </label>
 
               <div className='space-y-4 mb-5'>
@@ -173,8 +177,8 @@ export default function CreateGroupPage({ onCreateGroup }) {
                       }
                       placeholder={
                         participantErrors[index]
-                          ? 'Participant name required'
-                          : `Name ${index + 1}`
+                          ? t('participantNameRequired')
+                          : `${t('name')} ${index + 1}`
                       }
                       className={`h-10 min-w-0 flex-1 rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
                         participantErrors[index]
@@ -187,7 +191,9 @@ export default function CreateGroupPage({ onCreateGroup }) {
                       type='button'
                       onClick={() => handleRemoveParticipant(index)}
                       disabled={participants.length <= 1}
-                      aria-label={`Remove participant ${index + 1}`}
+                      aria-label={`${t('remove')} ${t('participants')} ${
+                        index + 1
+                      }`}
                       className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-50 hover:text-zinc-600 disabled:opacity-40'
                     >
                       <Trash2 className='h-4.5 w-4.5' />
@@ -202,7 +208,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                   onClick={handleAddParticipant}
                   className='h-10 w-full border border-zinc-200 rounded-xl bg-zinc-100 px-4 text-sm font-medium text-zinc-600 transition hover:bg-zinc-800 hover:text-white'
                 >
-                  + Add participant
+                  {t('addParticipant')}
                 </button>
               )}
             </div>
@@ -211,7 +217,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
               type='submit'
               className='h-10 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition  hover:bg-zinc-800 hover:text-white'
             >
-              Create group
+              {t('createBalance')}
             </button>
           </form>
 
@@ -223,7 +229,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                 className='inline-flex h-8 items-center justify-center gap-2 border border-zinc-200 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-900 hover:text-white'
               >
                 <RotateCcw className='h-4 w-4' />
-                <span>Resume last group</span>
+                <span>{t('continueLastBalance')}</span>
               </button>
             </div>
           )}

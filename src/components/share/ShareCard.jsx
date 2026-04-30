@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { ArrowRight } from 'lucide-react';
 import fractoLogo from '../../assets/branding/fracto-logo-orange-chrome.png';
+import { useLanguage } from '../../context/useLanguage';
 
 export default function ShareCard({
   shareRef,
@@ -10,10 +11,11 @@ export default function ShareCard({
   averagePerPerson,
   settlements,
 }) {
+  const { t } = useLanguage();
   const formattedTotalAmount = Number(totalAmount || 0).toFixed(2);
   const formattedAveragePerPerson = Number(averagePerPerson || 0).toFixed(2);
   const participants = group?.participants || [];
-  const groupName = group?.name || 'Untitled group';
+  const groupName = group?.name || t('untitledGroup');
 
   const getParticipant = (participantValue) => {
     if (participantValue && typeof participantValue === 'object') {
@@ -26,7 +28,7 @@ export default function ShareCard({
   };
 
   const getParticipantName = (participantValue) =>
-    getParticipant(participantValue)?.name || 'Unknown';
+    getParticipant(participantValue)?.name || t('unknown');
 
   const getParticipantColor = (participantValue) =>
     getParticipant(participantValue)?.color;
@@ -79,8 +81,8 @@ export default function ShareCard({
                     {groupName}
                   </h1>
                   <p className='mt-0.5 text-sm text-zinc-500'>
-                    {participantCount} participants /{' '}
-                    {formattedAveragePerPerson}€ each
+                    {participantCount} {t('participants')} /{' '}
+                    {formattedAveragePerPerson}€ {t('each')}
                   </p>
                 </div>
 
@@ -88,7 +90,7 @@ export default function ShareCard({
                   <p className='text-2xl font-semibold tracking-tight tabular-nums text-zinc-900'>
                     {formattedTotalAmount}€
                   </p>
-                  <p className='mt-0.5 text-sm text-zinc-500'>total</p>
+                  <p className='mt-0.5 text-sm text-zinc-500'>{t('total')}</p>
                 </div>
               </div>
 
@@ -110,12 +112,14 @@ export default function ShareCard({
 
             <section>
               <h2 className='mb-3 ms-1 text-xl font-semibold tracking-tight text-zinc-900'>
-                Suggested payments
+                {t('suggestedPayments')}
               </h2>
 
               <div className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
                 {groupedSettlements.length === 0 ? (
-                  <p className='text-sm text-zinc-400'>No payments needed</p>
+                  <p className='text-sm text-zinc-400'>
+                    {t('noPaymentsNeeded')}
+                  </p>
                 ) : (
                   <div className='divide-y divide-zinc-100'>
                     {groupedSettlements.map((settlementGroup) => (

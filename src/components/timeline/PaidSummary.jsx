@@ -1,4 +1,8 @@
+import { useLanguage } from '../../context/useLanguage';
+
 export default function Timeline({ expenses, group }) {
+  const { t } = useLanguage();
+
   const participantsById = Object.fromEntries(
     group.participants.map((participant) => [participant.id, participant]),
   );
@@ -28,7 +32,7 @@ export default function Timeline({ expenses, group }) {
   return (
     <section className='md:col-span-2 rounded-md border border-zinc-200 bg-white px-3 pt-2 pb-4'>
       <div className='mb-3'>
-        <h2 className='text-base font-medium text-zinc-500'>Activity</h2>
+        <h2 className='text-base font-medium text-zinc-500'>{t('activity')}</h2>
       </div>
 
       <div className='flex flex-wrap gap-3'>

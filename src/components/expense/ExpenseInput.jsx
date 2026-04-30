@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import { useLanguage } from '../../context/useLanguage';
 
 export default function ExpenseInput({
   participants,
   onAddExpense,
   triggerVariant = 'primary',
 }) {
+  const { t } = useLanguage();
   const [isRendered, setIsRendered] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [paidBy, setPaidBy] = useState(participants[0]?.id ?? '');
@@ -69,7 +71,7 @@ export default function ExpenseInput({
   return (
     <>
       <button type='button' onClick={openSheet} className={triggerClassName}>
-        Add expense
+        {t('addExpense')}
       </button>
 
       {isRendered && (
@@ -91,7 +93,7 @@ export default function ExpenseInput({
               <button
                 type='button'
                 onClick={closeSheet}
-                aria-label='Close sheet'
+                aria-label={t('closeSheet')}
                 className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900'
               >
                 <X className='h-5 w-5' />
@@ -101,7 +103,7 @@ export default function ExpenseInput({
             <form onSubmit={handleSubmit} className='space-y-6'>
               <div className='space-y-2'>
                 <label className='block text-sm font-medium text-zinc-700'>
-                  Add expense
+                  {t('addExpense')}
                 </label>
               </div>
 
@@ -149,7 +151,7 @@ export default function ExpenseInput({
               <div className='space-y-3'>
                 <input
                   type='text'
-                  placeholder='Concept'
+                  placeholder={t('concept')}
                   value={concept}
                   onChange={(event) => setConcept(event.target.value)}
                   className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
@@ -181,7 +183,7 @@ export default function ExpenseInput({
                   type='submit'
                   className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
                 >
-                  Add
+                  {t('add')}
                 </button>
 
                 <button
@@ -189,7 +191,7 @@ export default function ExpenseInput({
                   onClick={closeSheet}
                   className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
               </div>
             </form>

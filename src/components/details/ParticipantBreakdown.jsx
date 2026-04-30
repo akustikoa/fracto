@@ -1,8 +1,12 @@
+import { useLanguage } from '../../context/useLanguage';
+
 export default function ParticipantBreakdown({ balances, expenses }) {
+  const { t } = useLanguage();
+
   return (
     <section>
       <h2 className='mb-3 ms-1 text-xl font-semibold tracking-tight text-zinc-900'>
-        Expenses by participant
+        {t('expensesByParticipant')}
       </h2>
 
       <div className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
@@ -34,7 +38,7 @@ export default function ParticipantBreakdown({ balances, expenses }) {
 
               {participantExpenses.length === 0 ? (
                 <p className='mt-2 pl-6 text-sm text-zinc-500'>
-                  No expenses yet
+                  {t('noExpensesYet')}
                 </p>
               ) : (
                 <div className='mt-2 space-y-1 pl-6'>

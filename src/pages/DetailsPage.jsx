@@ -10,9 +10,11 @@ import ShareCard from '../components/share/ShareCard';
 import { getGroupById } from '../lib/api/groups';
 import { getExpensesByGroupId } from '../lib/api/expenses';
 import { Share2 } from 'lucide-react';
+import { useLanguage } from '../context/useLanguage';
 
 export default function DetailsPage() {
   const { id } = useParams();
+  const { t } = useLanguage();
   const shareCardRef = useRef(null);
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);
@@ -72,7 +74,9 @@ export default function DetailsPage() {
       ) {
         await navigator.share({
           title: group.name,
-          text: `View the balance for “${group.name}” on Fracto:\n${detailsUrl}`,
+          text: `${t('shareTextViewBalanceFor')} "${group.name}" ${t(
+            'shareTextOnFracto',
+          )}\n${detailsUrl}`,
           files: [file],
         });
         return;
@@ -103,7 +107,7 @@ export default function DetailsPage() {
                   {group.name}
                 </h1>
                 <p className='mt-0.5 text-sm text-zinc-500'>
-                  {group.participants.length} participants
+                  {group.participants.length} {t('participants')}
                 </p>
               </div>
 
@@ -111,7 +115,7 @@ export default function DetailsPage() {
                 <p className='text-2xl font-semibold tracking-tight tabular-nums text-zinc-900'>
                   {totalSpent.toFixed(2)}€
                 </p>
-                <p className='mt-0.5 text-sm text-zinc-500'>total</p>
+                <p className='mt-0.5 text-sm text-zinc-500'>{t('total')}</p>
               </div>
             </div>
 
@@ -139,7 +143,7 @@ export default function DetailsPage() {
             className='flex items-center justify-center gap-4 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
             <Share2 className='h-5 w-5 shrink-0' />
-            Share summary
+            {t('shareSummary')}
           </button>
 
           <ParticipantBreakdown
