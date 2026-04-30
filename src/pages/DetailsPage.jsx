@@ -139,7 +139,7 @@ export default function DetailsPage() {
             className='flex items-center justify-center gap-4 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
             <Share2 className='h-5 w-5 shrink-0' />
-            Share balance
+            Share summary
           </button>
 
           <ParticipantBreakdown
