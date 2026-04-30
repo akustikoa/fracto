@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FileCheckCorner, X } from 'lucide-react';
+import { FileCheckCorner } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import { participantColors } from '../data/participantColors';
@@ -13,8 +13,7 @@ import {
 import { useGroupData } from '../hooks/useGroupData';
 
 import GroupHeader from '../components/group/GroupHeader';
-import EditGroupSheet from '../components/group/EditGroupSheet';
-import ParticipantSheet from '../components/group/ParticipantSheet';
+import GroupBottomSheet from '../components/group/GroupBottomSheet';
 import BalanceList from '../components/balance/BalanceList';
 import ExpenseInput from '../components/expense/ExpenseInput';
 import AppHeader from '../components/layout/AppHeader';
@@ -374,100 +373,35 @@ export default function GroupPage() {
             />
           </BalanceList>
 
-          {(selectedParticipant || isEditingGroup || isConfirmingReset) && (
-            <div className='fixed inset-0 z-50 flex items-end justify-center'>
-              <div
-                className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${
-                  isSheetOpen ? 'opacity-100' : 'opacity-0'
-                }`}
-                onClick={handleCloseSheet}
-              />
-
-              <div
-                className='relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pt-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] shadow-[0_-6px_20px_rgba(0,0,0,0.10)] transition-transform duration-300'
-                style={{
-                  transform: isSheetOpen ? 'translateY(0)' : 'translateY(100%)',
-                }}
-              >
-                <div className='mb-1 flex justify-end'>
-                  <button
-                    type='button'
-                    onClick={handleCloseSheet}
-                    aria-label='Close sheet'
-                    className='flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900'
-                  >
-                    <X className='h-5 w-5' />
-                  </button>
-                </div>
-
-                {isConfirmingReset ? (
-                  <div className='space-y-6'>
-                    <div className='space-y-2'>
-                      <label className='block text-sm font-medium text-zinc-700'>
-                        Delete group
-                      </label>
-                      <p className='text-sm leading-6 text-zinc-600'>
-                        Do you want to delete group {group.name} and all
-                        expenses? This action cannot be undone.
-                      </p>
-                    </div>
-
-                    <div className='flex gap-2'>
-                      <button
-                        type='button'
-                        onClick={handleResetGroup}
-                        className='h-10 flex-1 rounded-xl bg-red-600 px-4 text-sm font-medium text-white transition hover:bg-red-500'
-                      >
-                        Delete group
-                      </button>
-                      <button
-                        type='button'
-                        onClick={handleCloseSheet}
-                        className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : isEditingGroup && draftGroup ? (
-                  <EditGroupSheet
-                    draftGroup={draftGroup}
-                    pendingRemoveId={pendingRemoveId}
-                    canSaveDraftGroup={canSaveDraftGroup}
-                    onDraftGroupNameChange={handleDraftGroupNameChange}
-                    onDraftParticipantNameChange={
-                      handleDraftParticipantNameChange
-                    }
-                    onAddParticipant={handleAddParticipant}
-                    onRemoveParticipant={handleRemoveParticipant}
-                    onConfirmRemoveParticipant={confirmRemoveParticipant}
-                    onCancelPendingRemove={() => setPendingRemoveId(null)}
-                    onSaveGroup={handleSaveGroup}
-                    onCancel={handleCloseSheet}
-                    maxParticipants={MAX_PARTICIPANTS}
-                  />
-                ) : selectedParticipant ? (
-                  <ParticipantSheet
-                    selectedParticipant={selectedParticipant}
-                    participantTotal={draftParticipantTotal}
-                    draftExpenses={draftParticipantExpenses}
-                    pendingRemoveExpenseId={pendingRemoveExpenseId}
-                    onRemoveExpense={handleRemoveExpense}
-                    onConfirmRemoveExpense={confirmRemoveExpense}
-                    onCancelPendingRemoveExpense={() =>
-                      setPendingRemoveExpenseId(null)
-                    }
-                    onExpenseDraftConceptChange={
-                      handleExpenseDraftConceptChange
-                    }
-                    onExpenseDraftAmountChange={handleExpenseDraftAmountChange}
-                    onSave={handleSaveParticipantExpenses}
-                    onCancel={handleCloseSheet}
-                  />
-                ) : null}
-              </div>
-            </div>
-          )}
+          <GroupBottomSheet
+            isOpen={isSheetOpen}
+            groupName={group.name}
+            selectedParticipant={selectedParticipant}
+            isEditingGroup={isEditingGroup}
+            isConfirmingReset={isConfirmingReset}
+            draftGroup={draftGroup}
+            pendingRemoveId={pendingRemoveId}
+            pendingRemoveExpenseId={pendingRemoveExpenseId}
+            canSaveDraftGroup={canSaveDraftGroup}
+            draftParticipantExpenses={draftParticipantExpenses}
+            draftParticipantTotal={draftParticipantTotal}
+            maxParticipants={MAX_PARTICIPANTS}
+            onClose={handleCloseSheet}
+            onResetGroup={handleResetGroup}
+            onDraftGroupNameChange={handleDraftGroupNameChange}
+            onDraftParticipantNameChange={handleDraftParticipantNameChange}
+            onAddParticipant={handleAddParticipant}
+            onRemoveParticipant={handleRemoveParticipant}
+            onConfirmRemoveParticipant={confirmRemoveParticipant}
+            onCancelPendingRemove={() => setPendingRemoveId(null)}
+            onSaveGroup={handleSaveGroup}
+            onRemoveExpense={handleRemoveExpense}
+            onConfirmRemoveExpense={confirmRemoveExpense}
+            onCancelPendingRemoveExpense={() => setPendingRemoveExpenseId(null)}
+            onExpenseDraftConceptChange={handleExpenseDraftConceptChange}
+            onExpenseDraftAmountChange={handleExpenseDraftAmountChange}
+            onSaveParticipantExpenses={handleSaveParticipantExpenses}
+          />
         </div>
       </div>
     </main>
