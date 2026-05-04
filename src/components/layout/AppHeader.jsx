@@ -21,12 +21,12 @@ export default function AppHeader({ groupId, variant }) {
           />
         </div>
 
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-3'>
           <button
             type='button'
             onClick={() => navigate(actionPath)}
             aria-label={isDetails ? t('backToGroup') : undefined}
-            className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
+            className='inline-flex h-8 items-center justify-center rounded-lg border border-white/30 bg-white/5  px-2.5 text-sm font-medium tracking-wide text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
           >
             {isDetails ? <ArrowLeft size={18} strokeWidth={2} /> : t('details')}
           </button>

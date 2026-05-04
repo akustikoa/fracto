@@ -140,7 +140,7 @@ export default function DetailsPage() {
           <button
             type='button'
             onClick={handleShare}
-            className='mt-7 flex items-center justify-center gap-4 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+            className='mt-7 flex items-center justify-center gap-4 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition shadow-md hover:bg-zinc-800'
           >
             <Share2 className='h-5 w-5 shrink-0' />
             {t('shareSummary')}

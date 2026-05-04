@@ -361,7 +361,7 @@ export default function GroupPage() {
               <button
                 type='button'
                 onClick={() => navigate(`/details/${group.id}`)}
-                className='flex items-center justify-center gap-3 h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition hover:bg-zinc-800'
+                className='flex items-center justify-center gap-3 h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white transition shadow-md hover:bg-zinc-800'
               >
                 <FileCheckCorner className='h-5 w-5 shrink-0' />
                 {t('reviewAndShare')}

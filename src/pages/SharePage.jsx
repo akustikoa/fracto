@@ -165,7 +165,7 @@ export default function SharePage() {
           <button
             type='button'
             onClick={handleShare}
-            className='mt-1 mb-0 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+            className='mt-1 mb-0 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition shadow-md hover:bg-zinc-800'
           >
             {t('share')}
           </button>
