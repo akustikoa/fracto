@@ -80,14 +80,14 @@ export default function GroupBottomSheet({
               <button
                 type='button'
                 onClick={onResetGroup}
-                className='h-10 flex-1 rounded-xl bg-red-600 px-4 text-sm font-medium text-white transition hover:bg-red-500'
+                className='h-10 flex-1 rounded-xl bg-red-600 px-4 text-sm shadow-sm font-medium text-white transition hover:bg-red-500'
               >
                 {t('deleteGroup')}
               </button>
               <button
                 type='button'
                 onClick={onClose}
-                className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
+                className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm shadow-sm text-zinc-600 transition hover:bg-zinc-50'
               >
                 {t('cancel')}
               </button>

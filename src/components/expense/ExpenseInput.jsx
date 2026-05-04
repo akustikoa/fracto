@@ -65,7 +65,7 @@ export default function ExpenseInput({
 
   const triggerClassName =
     triggerVariant === 'secondary'
-      ? 'h-11 w-full rounded-xl border border-zinc-200/80 bg-zinc-100 text-sm font-medium text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-900 hover:text-zinc-100'
+      ? 'h-11 w-full rounded-xl border border-zinc-200/80 bg-zinc-100 text-sm font-medium  text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-900 hover:text-zinc-100'
       : 'h-12 w-full rounded-2xl bg-zinc-900 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800';
 
   return (
@@ -116,7 +116,7 @@ export default function ExpenseInput({
                       key={participant.id}
                       type='button'
                       onClick={() => setPaidBy(participant.id)}
-                      className={`inline-flex h-10 items-center gap-2 rounded-xl border px-3 text-sm transition ${
+                      className={`inline-flex h-10 items-center gap-2 rounded-xl border px-3 text-sm shadow-sm transition ${
                         isSelected
                           ? 'justify-center border-transparent'
                           : 'border-zinc-200/80 bg-zinc-50 hover:border-zinc-300 hover:bg-white'
@@ -181,7 +181,7 @@ export default function ExpenseInput({
               <div className='flex gap-2'>
                 <button
                   type='submit'
-                  className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+                  className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-800'
                 >
                   {t('add')}
                 </button>
@@ -189,7 +189,7 @@ export default function ExpenseInput({
                 <button
                   type='button'
                   onClick={closeSheet}
-                  className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
+                  className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm shadow-sm text-zinc-600 transition hover:bg-zinc-50'
                 >
                   {t('cancel')}
                 </button>

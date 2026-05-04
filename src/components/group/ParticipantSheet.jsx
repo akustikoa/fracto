@@ -121,14 +121,14 @@ export default function ParticipantSheet({
         <button
           type='button'
           onClick={onSave}
-          className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+          className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-800'
         >
           {t('save')}
         </button>
         <button
           type='button'
           onClick={onCancel}
-          className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm text-zinc-600 transition hover:bg-zinc-50'
+          className='h-10 rounded-xl border border-zinc-200/80 px-4 text-sm shadow-sm text-zinc-600 transition hover:bg-zinc-50'
         >
           {t('cancel')}
         </button>
