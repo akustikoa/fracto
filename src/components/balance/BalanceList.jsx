@@ -68,7 +68,7 @@ export default function BalanceList({
         <div className='mb-1 flex items-center justify-between gap-3'>
           <button
             onClick={onEditGroup}
-            className='group inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-1 text-sm text-zinc-600 hover:bg-zinc-900 hover:text-white'
+            className='group inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-1 text-sm shadow-sm text-zinc-600 hover:bg-zinc-900 hover:text-white'
           >
             <Users className='h-4 w-4' />
             <span>{participantCount}</span>
@@ -82,7 +82,7 @@ export default function BalanceList({
           <button
             type='button'
             onClick={onResetGroup}
-            className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition  hover:bg-zinc-900 hover:text-white'
+            className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm shadow-sm text-zinc-600 transition  hover:bg-zinc-900 hover:text-white'
           >
             <RotateCcw className='h-4 w-4' />
             <span>{t('reset')}</span>
@@ -96,6 +96,7 @@ export default function BalanceList({
               height={size}
               viewBox={`0 0 ${size} ${size}`}
               className='-rotate-90'
+              style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.2))' }}
             >
               <circle
                 cx={size / 2}
@@ -177,11 +178,11 @@ export default function BalanceList({
       {footerAction && <div className='mt-7'>{footerAction}</div>}
 
       {settlements.length > 0 && (
-        <div className='mt-8 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'>
+        <div className='mt-8'>
           <SettlementList
             settlements={settlements}
             titleClassName='mb-2 ms-1 text-base font-semibold text-zinc-800'
-            containerClassName='rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
+            containerClassName='rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'
           />
         </div>
       )}

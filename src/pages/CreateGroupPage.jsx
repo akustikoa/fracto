@@ -121,12 +121,10 @@ export default function CreateGroupPage({ onCreateGroup }) {
               alt='Fracto'
               className='h-18 w-18 mb-3 object-contain'
             />
-            <h1 className='text-4xl font-semibold tracking-tight text-zinc-900 leading-tight'>
+            <h1 className='mb-1 text-4xl font-semibold tracking-tight text-zinc-900 leading-tight'>
               {t('createBalance')}
             </h1>
-            <p className=' mb-4 text-center text-  text-zinc-500'>
-              {t('groupIntro')}
-            </p>
+            <p className=' mb-4 text-center text-zinc-500'>{t('groupIntro')}</p>
           </div>
 
           <form
@@ -143,7 +141,9 @@ export default function CreateGroupPage({ onCreateGroup }) {
                 value={groupName}
                 onChange={(event) => handleGroupNameChange(event.target.value)}
                 placeholder={
-                  groupNameError ? t('groupNameRequired') : t('barcelonaWeekend')
+                  groupNameError
+                    ? t('groupNameRequired')
+                    : t('barcelonaWeekend')
                 }
                 className={`h-11 w-full rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
                   groupNameError
@@ -206,7 +206,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                 <button
                   type='button'
                   onClick={handleAddParticipant}
-                  className='h-10 w-full border border-zinc-200 rounded-xl bg-zinc-100 px-4 text-sm font-medium text-zinc-600 transition hover:bg-zinc-800 hover:text-white'
+                  className='h-10 w-full border border-zinc-200 rounded-xl bg-zinc-100 px-4 text-sm font-medium shadow-sm text-zinc-600 transition hover:bg-zinc-800 hover:text-white'
                 >
                   {t('addParticipant')}
                 </button>
@@ -215,7 +215,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
             <button
               type='submit'
-              className='h-10 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition  hover:bg-zinc-800 hover:text-white'
+              className='h-10 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white shadow-sm transition  hover:bg-zinc-100 hover:text-zinc-700'
             >
               {t('createBalance')}
             </button>
@@ -226,7 +226,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
               <button
                 type='button'
                 onClick={() => navigate(`/group/${lastGroupId}`)}
-                className='inline-flex h-8 items-center justify-center gap-2 border border-zinc-200 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-900 hover:text-white'
+                className='inline-flex h-8 items-center justify-center gap-2 border border-zinc-200 rounded-full bg-zinc-100 px-4 text-sm shadow-sm text-zinc-600 transition hover:bg-zinc-900 hover:text-white'
               >
                 <RotateCcw className='h-4 w-4' />
                 <span>{t('continueLastBalance')}</span>
