@@ -128,7 +128,7 @@ export default function BalanceList({
               <span className='text-2xl font-semibold tracking-tight text-zinc-900'>
                 {Number(totalPaidAmount.toFixed(2))}€
               </span>
-              <span className='text-medium font-semibold trackin-wide text-zinc-800'>
+              <span className='text-base trackin-wide  text-zinc-400'>
                 {t('total')}
               </span>
             </div>
