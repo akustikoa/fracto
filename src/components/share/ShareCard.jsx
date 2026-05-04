@@ -74,7 +74,7 @@ export default function ShareCard({
 
         <div className='px-4 py-6'>
           <div className='space-y-6'>
-            <section className='rounded-2xl border border-zinc-200/70 bg-white px-5 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.035)]'>
+            <section className='rounded-2xl border border-zinc-200/70 bg-white px-5 py-4 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'>
               <div className='flex items-start justify-between gap-4'>
                 <div className='min-w-0'>
                   <h1 className='truncate text-2xl font-semibold tracking-tight text-zinc-900'>
@@ -115,7 +115,7 @@ export default function ShareCard({
                 {t('suggestedPayments')}
               </h2>
 
-              <div className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
+              <div className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'>
                 {groupedSettlements.length === 0 ? (
                   <p className='text-sm text-zinc-400'>
                     {t('noPaymentsNeeded')}

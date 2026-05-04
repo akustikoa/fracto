@@ -122,9 +122,9 @@ export default function SharePage() {
         </div>
       </header>
 
-      <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
+      <div className='mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-8'>
         <div className='space-y-6'>
-          <header className='rounded-2xl border border-zinc-200/70 bg-white px-5 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.035)]'>
+          <header className='mb-7 rounded-2xl border border-zinc-200/70 bg-white px-5 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.035)]'>
             <div className='flex items-start justify-between gap-4'>
               <div className='min-w-0'>
                 <h1 className='truncate text-2xl font-semibold tracking-tight text-zinc-900'>
@@ -165,7 +165,7 @@ export default function SharePage() {
           <button
             type='button'
             onClick={handleShare}
-            className=' h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+            className='mt-1 mb-0 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
             {t('share')}
           </button>

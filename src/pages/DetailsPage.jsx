@@ -95,12 +95,12 @@ export default function DetailsPage() {
   };
 
   return (
-    <main className='min-h-screen bg-zinc-50'>
+    <main className=' min-h-screen bg-zinc-50'>
       <AppHeader groupId={id} variant='details' />
 
-      <div className='mx-auto max-w-3xl px-4 py-6 md:px-6 md:py-8'>
+      <div className='mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-8'>
         <div className='space-y-6'>
-          <header className='rounded-2xl border border-zinc-200/70 bg-white px-5 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.035)]'>
+          <header className='mb-8 rounded-2xl border border-zinc-200/70 bg-white px-5 py-4 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'>
             <div className='flex items-start justify-between gap-4'>
               <div className='min-w-0'>
                 <h1 className='truncate text-2xl font-semibold tracking-tight text-zinc-900'>
@@ -140,7 +140,7 @@ export default function DetailsPage() {
           <button
             type='button'
             onClick={handleShare}
-            className='flex items-center justify-center gap-4 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
+            className='mt-7 flex items-center justify-center gap-4 h-11 w-full rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white transition hover:bg-zinc-800'
           >
             <Share2 className='h-5 w-5 shrink-0' />
             {t('shareSummary')}

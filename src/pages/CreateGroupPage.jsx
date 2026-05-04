@@ -132,7 +132,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
           <form
             onSubmit={handleSubmit}
             noValidate
-            className='w-full space-y-5 rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
+            className='w-full space-y-5 rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'
           >
             <div className='space-y-2'>
               <label className='block text-sm font-medium text-zinc-700'>

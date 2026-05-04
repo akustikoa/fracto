@@ -4,7 +4,7 @@ import { useLanguage } from '../../context/useLanguage';
 
 export default function SettlementList({
   settlements,
-  titleClassName = 'mb-3 ms-1 text-xl font-semibold tracking-tight text-zinc-900',
+  titleClassName = 'mb-3 ms-1 text-base font-semibold text-zinc-900',
   containerClassName = 'rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]',
 }) {
   const { t } = useLanguage();

@@ -29,7 +29,7 @@ export default function BalanceList({
       : '0.00';
 
   const gap = 2;
-  const size = 150;
+  const size = 160;
   const strokeWidth = 16;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
@@ -60,11 +60,11 @@ export default function BalanceList({
 
   return (
     <div>
-      <h2 className='mb-2 ms-1 text-lg font-semibold text-zinc-900'>
+      <h2 className='mb-2 ms-1 text-base font-semibold text-zinc-800'>
         {t('balance')}
       </h2>
 
-      <section className='rounded-2xl border border-zinc-200/80 bg-white/95 px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
+      <section className='rounded-2xl border border-zinc-200/80 bg-white/95 px-5 py-5 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'>
         <div className='mb-1 flex items-center justify-between gap-3'>
           <button
             onClick={onEditGroup}
@@ -73,22 +73,23 @@ export default function BalanceList({
             <Users className='h-4 w-4' />
             <span>{participantCount}</span>
             <span className='text-zinc-700'>/</span>
-            <span>
-              {averagePerPerson}€ {t('each')}
+            <span className='inline-flex items-center gap-1.5'>
+              <span>{averagePerPerson}€</span>
+              <span>{t('each')}</span>
             </span>
           </button>
 
           <button
             type='button'
             onClick={onResetGroup}
-            className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition hover:bg-zinc-900 hover:text-white'
+            className='inline-flex h-7  shrink-0 items-center justify-center gap-2.5 rounded-full bg-zinc-100 px-4 text-sm text-zinc-600 transition  hover:bg-zinc-900 hover:text-white'
           >
             <RotateCcw className='h-4 w-4' />
             <span>{t('reset')}</span>
           </button>
         </div>
 
-        <div className='mt-6 flex flex-col items-center'>
+        <div className='mt-10 flex flex-col items-center'>
           <div className='relative flex items-center justify-center'>
             <svg
               width={size}
@@ -173,13 +174,13 @@ export default function BalanceList({
         {children && <div className='mt-5'>{children}</div>}
       </section>
 
-      {footerAction && <div className='mt-5'>{footerAction}</div>}
+      {footerAction && <div className='mt-7'>{footerAction}</div>}
 
       {settlements.length > 0 && (
-        <div className='mt-6'>
+        <div className='mt-8 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'>
           <SettlementList
             settlements={settlements}
-            titleClassName='mb-2 ms-1 text-lg font-semibold text-zinc-900'
+            titleClassName='mb-2 ms-1 text-base font-semibold text-zinc-800'
             containerClassName='rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'
           />
         </div>

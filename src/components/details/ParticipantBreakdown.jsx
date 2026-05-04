@@ -5,11 +5,11 @@ export default function ParticipantBreakdown({ balances, expenses }) {
 
   return (
     <section>
-      <h2 className='mb-3 ms-1 text-xl font-semibold tracking-tight text-zinc-900'>
+      <h2 className='mb-3 mt-8 ms-1 text-base font-semibold text-zinc-900'>
         {t('expensesByParticipant')}
       </h2>
 
-      <div className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-4 shadow-[0_1px_3px_rgba(0,0,0,0.05)]'>
+      <div className='rounded-2xl border border-zinc-200/80 bg-white px-5 py-5 shadow-[0_4px_20px_rgba(0,0,0,0.06)]'>
         {balances.map(({ participant, totalPaid }) => {
           const participantExpenses = expenses.filter(
             (expense) => expense.paidBy === participant.id,
