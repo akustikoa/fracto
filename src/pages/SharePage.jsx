@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
 import SettlementList from '../components/details/SettlementList';
 import ShareCard from '../components/share/ShareCard';
+import fractoMark from '../assets/branding/fracto-markround-chrome.png';
 import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
@@ -18,23 +19,108 @@ export default function SharePage() {
   const { t } = useLanguage();
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     async function loadShareData() {
-      const [loadedGroup, loadedExpenses] = await Promise.all([
-        getGroupById(id),
-        getExpensesByGroupId(id),
-      ]);
+      setIsLoading(true);
+      setIsNotFound(false);
+
+      let loadedGroup;
+
+      try {
+        loadedGroup = await getGroupById(id);
+      } catch (error) {
+        console.error('Error loading shared group', error);
+        setGroup(null);
+        setExpenses([]);
+        setIsNotFound(true);
+        setIsLoading(false);
+        return;
+      }
+
+      if (!loadedGroup) {
+        setGroup(null);
+        setExpenses([]);
+        setIsNotFound(true);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const loadedExpenses = await getExpensesByGroupId(id);
+
+        setExpenses(loadedExpenses);
+      } catch (error) {
+        console.error('Error loading shared expenses', error);
+        setExpenses([]);
+      }
 
       setGroup(loadedGroup);
-      setExpenses(loadedExpenses);
+      setIsLoading(false);
     }
 
     loadShareData();
   }, [id]);
 
-  if (!group) {
+  const handleNewBalance = () => {
+    navigate('/');
+  };
+
+  if (isLoading) {
     return null;
+  }
+
+  if (isNotFound) {
+    return (
+      <main className='min-h-screen bg-zinc-50'>
+        <header className='border-b border-zinc-200/50 bg-[#DA3C20]'>
+          <div className='mx-auto flex h-16 max-w-3xl items-center justify-between px-4 md:px-6'>
+            <img
+              src={fractoLogo}
+              alt='Fracto'
+              className='h-8 w-auto shrink-0 object-contain'
+            />
+
+            <button
+              type='button'
+              onClick={handleNewBalance}
+              className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
+            >
+              {t('newBalance')}
+            </button>
+          </div>
+        </header>
+
+        <div className='mx-auto flex min-h-[calc(100vh-4rem)] max-w-3xl items-center justify-center px-4 py-8 text-center md:px-6 md:py-8'>
+          <div className='flex flex-col items-center text-center space-y-3'>
+            <img
+              src={fractoMark}
+              alt='Fracto'
+              className='h-18 w-18 mb-3 object-contain'
+            />
+
+            <div className='space-y-2'>
+              <h1 className='text-2xl font-semibold tracking-tight text-zinc-900'>
+                {t('groupNotFound')}
+              </h1>
+              <p className='text-sm text-zinc-500'>
+                {t('groupNotFoundDescription')}
+              </p>
+            </div>
+
+            <button
+              type='button'
+              onClick={handleNewBalance}
+              className='h-10 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800'
+            >
+              {t('createNewBalance')}
+            </button>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   const validParticipantIds = group.participants.map(
@@ -54,10 +140,6 @@ export default function SharePage() {
   const participantCount = group.participants.length;
   const averagePerPerson =
     participantCount > 0 ? totalAmount / participantCount : 0;
-
-  const handleNewBalance = () => {
-    navigate('/');
-  };
 
   const handleShare = async () => {
     const shareUrl = `${window.location.origin}/share/${group.id}`;
