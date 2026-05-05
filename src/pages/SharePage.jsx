@@ -93,15 +93,15 @@ export default function SharePage() {
           </div>
         </header>
 
-        <div className='mx-auto flex min-h-[calc(100vh-4rem)] max-w-3xl items-center justify-center px-4 py-8 text-center md:px-6 md:py-8'>
-          <div className='flex flex-col items-center text-center space-y-3'>
+        <div className='mx-auto flex min-h-[calc(100vh-10rem)] max-w-3xl items-center justify-center px-4 py-8 text-center md:px-6 md:py-8'>
+          <div className='flex flex-col items-center text-center space-y-8'>
             <img
               src={fractoMark}
               alt='Fracto'
-              className='h-18 w-18 mb-3 object-contain'
+              className='h-22 w-22 mb-3 object-contain'
             />
 
-            <div className='space-y-2'>
+            <div className='space-y-1'>
               <h1 className='text-2xl font-semibold tracking-tight text-zinc-900'>
                 {t('groupNotFound')}
               </h1>
