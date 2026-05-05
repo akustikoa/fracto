@@ -73,6 +73,7 @@ export default function EditGroupSheet({
                 <input
                   type='text'
                   value={participant.name}
+                  placeholder={t('newParticipant')}
                   onChange={(event) =>
                     onDraftParticipantNameChange(
                       participant.id,

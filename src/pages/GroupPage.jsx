@@ -174,8 +174,8 @@ export default function GroupPage() {
           ...currentGroup.participants,
           {
             id: crypto.randomUUID(),
-            name: t('newParticipant'),
-            initial: 'N',
+            name: '',
+            initial: '',
             color: participantColors[nextIndex % participantColors.length],
           },
         ],
