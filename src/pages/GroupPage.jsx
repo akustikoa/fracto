@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FileCheckCorner } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
@@ -12,6 +12,7 @@ import {
   updateExpense,
 } from '../lib/api/expenses';
 import { useGroupData } from '../hooks/useGroupData';
+import { touchGroupActivity } from '../lib/groupActivity';
 
 import GroupHeader from '../components/group/GroupHeader';
 import GroupBottomSheet from '../components/group/GroupBottomSheet';
@@ -35,6 +36,10 @@ export default function GroupPage() {
   const [pendingRemoveId, setPendingRemoveId] = useState(null);
   const [pendingRemoveExpenseId, setPendingRemoveExpenseId] = useState(null);
   const [draftParticipantExpenses, setDraftParticipantExpenses] = useState([]);
+
+  useEffect(() => {
+    touchGroupActivity(group?.id);
+  }, [group?.id]);
 
   if (!group) {
     return null;
@@ -69,6 +74,7 @@ export default function GroupPage() {
     });
 
     setExpenses((previousExpenses) => [...previousExpenses, createdExpense]);
+    await touchGroupActivity(id);
   }
 
   function handleResetRequest() {
@@ -83,6 +89,7 @@ export default function GroupPage() {
   }
 
   async function handleResetGroup() {
+    await touchGroupActivity(group.id);
     await deleteGroup(group.id);
 
     localStorage.removeItem('lastGroupId');
@@ -242,6 +249,7 @@ export default function GroupPage() {
     });
 
     setGroup(updatedGroup);
+    await touchGroupActivity(updatedGroup.id);
     handleCloseSheet();
   }
 
@@ -338,6 +346,7 @@ export default function GroupPage() {
       }),
     );
 
+    await touchGroupActivity(id);
     handleCloseSheet();
   }
 

@@ -11,6 +11,7 @@ import { calculateSettlements } from '../lib/settlement.utils';
 import { getGroupById } from '../lib/api/groups';
 import { getExpensesByGroupId } from '../lib/api/expenses';
 import { useLanguage } from '../context/useLanguage';
+import { touchGroupActivity } from '../lib/groupActivity';
 
 export default function SharePage() {
   const shareCardRef = useRef(null);
@@ -47,6 +48,8 @@ export default function SharePage() {
         setIsLoading(false);
         return;
       }
+
+      await touchGroupActivity(loadedGroup.id);
 
       try {
         const loadedExpenses = await getExpensesByGroupId(id);
