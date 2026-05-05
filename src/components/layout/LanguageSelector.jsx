@@ -48,7 +48,7 @@ export default function LanguageSelector() {
       </button>
 
       <div
-        className={`absolute -right-1 top-full z-20 mt-2 min-w-full origin-top-right rounded-xl border border-zinc-200 bg-white py-1 text-sm shadow-sm transition duration-150 ${
+        className={`absolute -right-1.5 top-full z-20 mt-2 min-w-full origin-top-right rounded-xl border border-zinc-200 bg-white py-1 text-sm shadow-sm transition duration-150 ${
           isOpen
             ? 'scale-105 opacity-100'
             : 'pointer-events-none scale-95 opacity-0'
@@ -61,7 +61,7 @@ export default function LanguageSelector() {
             onClick={() => handleLanguageSelect(option)}
             className={`block w-full px-3 py-2 text-left lowercase transition hover:bg-zinc-50 active:bg-zinc-100 ${
               language === option
-                ? 'bg-white text-[#DA3C20] font-bold '
+                ? 'rounded-md border border-white bg-white text-[#DA3C20] font-bold '
                 : 'text-zinc-700 font-medium'
             }`}
           >

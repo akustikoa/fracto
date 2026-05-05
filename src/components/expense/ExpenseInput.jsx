@@ -184,7 +184,7 @@ export default function ExpenseInput({
               <div className='flex gap-2'>
                 <button
                   type='submit'
-                  className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-800'
+                  className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-100 hover:text-zinc-700'
                 >
                   {t('add')}
                 </button>
