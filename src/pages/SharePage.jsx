@@ -260,6 +260,10 @@ export default function SharePage() {
             expenses={filteredExpenses}
           />
         </div>
+
+        <p className='mt-2 mx-auto max-w-sm text-center text-xs text-zinc-400'>
+          {t('autoDeleteNote')}
+        </p>
       </div>
 
       <div

@@ -4,6 +4,8 @@ export const translations = {
     addExpense: 'Add expense',
     addParticipant: '+ Add participant',
     activity: 'Activity',
+    autoDeleteNote:
+      'Balances are automatically deleted after 15 days of inactivity.',
     balance: 'Balance',
     balanceName: 'Group name',
     backToGroup: 'Back to group',
@@ -58,6 +60,8 @@ export const translations = {
     addExpense: 'Afegir despesa',
     addParticipant: '+ Afegir participant',
     activity: 'Activitat',
+    autoDeleteNote:
+      "Els comptes s'esborren automàticament després de 15 dies d'inactivitat.",
     balance: 'Comptes',
     balanceName: 'Nom del grup',
     backToGroup: 'Tornar al grup',
@@ -113,6 +117,8 @@ export const translations = {
     addExpense: 'Añadir gasto',
     addParticipant: '+ Añadir participante',
     activity: 'Actividad',
+    autoDeleteNote:
+      'Los balances se eliminan automáticamente después de 15 días de inactividad.',
     balance: 'Cuentas',
     balanceName: 'Nombre del grupo',
     backToGroup: 'Volver al grupo',
@@ -168,6 +174,8 @@ export const translations = {
     addExpense: 'Ajouter une dépense',
     addParticipant: '+ Ajouter un participant',
     activity: 'Activité',
+    autoDeleteNote:
+      'Les balances sont supprimés automatiquement après 15 jours d’inactivité.',
     balance: 'Bilan',
     balanceName: 'Nom du groupe',
     backToGroup: 'Retour au groupe',
