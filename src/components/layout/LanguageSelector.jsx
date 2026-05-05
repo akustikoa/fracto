@@ -50,7 +50,7 @@ export default function LanguageSelector() {
       <div
         className={`absolute -right-1 top-full z-20 mt-2 min-w-full origin-top-right rounded-xl border border-zinc-200 bg-white py-1 text-sm shadow-sm transition duration-150 ${
           isOpen
-            ? 'scale-100 opacity-100'
+            ? 'scale-105 opacity-100'
             : 'pointer-events-none scale-95 opacity-0'
         }`}
       >
