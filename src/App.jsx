@@ -1,40 +1,40 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
-import GroupPage from './pages/GroupPage';
-import CreateGroupPage from './pages/CreateGroupPage';
-import DetailsPage from './pages/DetailsPage';
-import SharePage from './pages/SharePage';
-import ScrollToTop from './components/ScrollToTop';
+  import { Navigate, Route, Routes } from 'react-router-dom';
+  import GroupPage from './pages/GroupPage';
+  import CreateGroupPage from './pages/CreateGroupPage';
+  import DetailsPage from './pages/DetailsPage';
+  import SharePage from './pages/SharePage';
+  import ScrollToTop from './components/ScrollToTop';
 
-export default function App() {
-  function handleCreateGroup() {
-    return null;
+  export default function App() {
+    function handleCreateGroup() {
+      return null;
+    }
+
+    return (
+      <>
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path='/'
+            element={<CreateGroupPage onCreateGroup={handleCreateGroup} />}
+          />
+          <Route
+            path='/group/:id'
+            element={<GroupPage />}
+          />
+          <Route
+            path='/details/:id'
+            element={<DetailsPage />}
+          />
+          <Route
+            path='/share/:id'
+            element={<SharePage />}
+          />
+          <Route
+            path='*'
+            element={<Navigate to='/' replace />}
+          />
+        </Routes>
+      </>
+    );
   }
-
-  return (
-    <>
-      <ScrollToTop />
-      <Routes>
-        <Route
-          path='/'
-          element={<CreateGroupPage onCreateGroup={handleCreateGroup} />}
-        />
-        <Route
-          path='/group/:id'
-          element={<GroupPage />}
-        />
-        <Route
-          path='/details/:id'
-          element={<DetailsPage />}
-        />
-        <Route
-          path='/share/:id'
-          element={<SharePage />}
-        />
-        <Route
-          path='*'
-          element={<Navigate to='/' replace />}
-        />
-      </Routes>
-    </>
-  );
-}

@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import SettlementList from '../components/details/SettlementList';
 import ParticipantBreakdown from '../components/details/ParticipantBreakdown';
 import AppHeader from '../components/layout/AppHeader';
+import fractoMark from '../assets/branding/fracto-markround-chrome.png';
+import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
 import ShareCard from '../components/share/ShareCard';
@@ -13,25 +15,106 @@ import { Share2 } from 'lucide-react';
 import { useLanguage } from '../context/useLanguage';
 
 export default function DetailsPage() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { t } = useLanguage();
   const shareCardRef = useRef(null);
   const [group, setGroup] = useState(null);
   const [expenses, setExpenses] = useState([]);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     async function loadDetailsData() {
-      const [loadedGroup, loadedExpenses] = await Promise.all([
-        getGroupById(id),
-        getExpensesByGroupId(id),
-      ]);
+      setIsNotFound(false);
+
+      let loadedGroup;
+
+      try {
+        loadedGroup = await getGroupById(id);
+      } catch (error) {
+        console.error('Error loading details group', error);
+        setGroup(null);
+        setExpenses([]);
+        setIsNotFound(true);
+        return;
+      }
+
+      if (!loadedGroup) {
+        setGroup(null);
+        setExpenses([]);
+        setIsNotFound(true);
+        return;
+      }
+
+      try {
+        const loadedExpenses = await getExpensesByGroupId(id);
+
+        setExpenses(loadedExpenses);
+      } catch (error) {
+        console.error('Error loading details expenses', error);
+        setExpenses([]);
+      }
 
       setGroup(loadedGroup);
-      setExpenses(loadedExpenses);
     }
 
     loadDetailsData();
   }, [id]);
+
+  const handleNewBalance = () => {
+    navigate('/');
+  };
+
+  if (isNotFound) {
+    return (
+      <main className='min-h-screen bg-zinc-50'>
+        <header className='border-b border-zinc-200/50 bg-[#DA3C20]'>
+          <div className='mx-auto flex h-16 max-w-3xl items-center justify-between px-4 md:px-6'>
+            <img
+              src={fractoLogo}
+              alt='Fracto'
+              className='h-8 w-auto shrink-0 object-contain'
+            />
+
+            <button
+              type='button'
+              onClick={handleNewBalance}
+              className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
+            >
+              {t('newBalance')}
+            </button>
+          </div>
+        </header>
+
+        <div className='mx-auto flex min-h-[calc(100vh-10rem)] max-w-3xl items-center justify-center px-4 py-8 text-center md:px-6 md:py-8'>
+          <div className='flex flex-col items-center text-center space-y-8'>
+            <img
+              src={fractoMark}
+              alt='Fracto'
+              className='h-22 w-22 mb-3 object-contain'
+            />
+
+            <div className='space-y-1'>
+              <h1 className='text-2xl font-semibold tracking-tight text-zinc-900'>
+                {t('groupNotFound')}
+              </h1>
+              <p className='text-sm text-zinc-500'>
+                {t('groupNotFoundDescription')}
+              </p>
+            </div>
+
+            <button
+              type='button'
+              onClick={handleNewBalance}
+              className='h-10 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800'
+            >
+              {t('createNewBalance')}
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   if (!group) {
     return null;
