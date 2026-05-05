@@ -81,7 +81,7 @@ export const translations = {
     each: 'cadascun',
     editGroup: 'Editar grup',
     expensesByParticipant: 'Despeses per participant',
-    groupIntro: 'Reparteix les despeses en segons',
+    groupIntro: 'Comparteix les despeses en segons',
     groupNameRequired: 'Cal el nom del grup',
     groupNotFound: 'Grup inexistent',
     groupNotFoundDescription: "Aquest grup s'ha borrat o ha caducat.",

@@ -12,6 +12,7 @@ import { getGroupById } from '../lib/api/groups';
 import { getExpensesByGroupId } from '../lib/api/expenses';
 import { useLanguage } from '../context/useLanguage';
 import { touchGroupActivity } from '../lib/groupActivity';
+import LanguageSelector from '../components/layout/LanguageSelector';
 
 export default function SharePage() {
   const shareCardRef = useRef(null);
@@ -86,13 +87,17 @@ export default function SharePage() {
               className='h-8 w-auto shrink-0 object-contain'
             />
 
-            <button
-              type='button'
-              onClick={handleNewBalance}
-              className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
-            >
-              {t('newBalance')}
-            </button>
+            <div className='flex items-center gap-2'>
+              <button
+                type='button'
+                onClick={handleNewBalance}
+                className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
+              >
+                {t('newBalance')}
+              </button>
+
+              <LanguageSelector />
+            </div>
           </div>
         </header>
 
@@ -197,13 +202,17 @@ export default function SharePage() {
             className='h-8 w-auto shrink-0 object-contain'
           />
 
-          <button
-            type='button'
-            onClick={handleNewBalance}
-            className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
-          >
-            {t('newBalance')}
-          </button>
+          <div className='flex items-center gap-2'>
+            <button
+              type='button'
+              onClick={handleNewBalance}
+              className='inline-flex h-8 items-center justify-center rounded-lg border border-white/25 bg-white/5 px-2.5 text-sm font-medium text-white/90 transition hover:bg-white/15 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/35 focus:ring-offset-2 focus:ring-offset-[#f72c25]'
+            >
+              {t('newBalance')}
+            </button>
+
+            <LanguageSelector />
+          </div>
         </div>
       </header>
 
