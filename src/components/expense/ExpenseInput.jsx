@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { useLanguage } from '../../context/useLanguage';
+import { capitalizeFirstLetter } from '../../lib/text.utils';
 
 export default function ExpenseInput({
   participants,
@@ -153,7 +154,9 @@ export default function ExpenseInput({
                   type='text'
                   placeholder={t('concept')}
                   value={concept}
-                  onChange={(event) => setConcept(event.target.value)}
+                  onChange={(event) =>
+                    setConcept(capitalizeFirstLetter(event.target.value))
+                  }
                   className='h-10 w-full rounded-xl border border-zinc-200/80 bg-zinc-50 px-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-zinc-300'
                 />
 

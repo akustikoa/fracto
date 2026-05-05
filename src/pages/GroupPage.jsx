@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FileCheckCorner } from 'lucide-react';
 import { calculateBalances } from '../lib/balance.utils';
 import { calculateSettlements } from '../lib/settlement.utils';
+import { capitalizeFirstLetter } from '../lib/text.utils';
 import { participantColors } from '../data/participantColors';
 import { deleteGroup, updateGroup } from '../lib/api/groups';
 import {
@@ -145,16 +146,18 @@ export default function GroupPage() {
   function handleDraftGroupNameChange(name) {
     setDraftGroup((currentGroup) => ({
       ...currentGroup,
-      name,
+      name: capitalizeFirstLetter(name),
     }));
   }
 
   function handleDraftParticipantNameChange(participantId, name) {
+    const capitalizedName = capitalizeFirstLetter(name);
+
     setDraftGroup((currentGroup) => ({
       ...currentGroup,
       participants: currentGroup.participants.map((participant) =>
         participant.id === participantId
-          ? { ...participant, name }
+          ? { ...participant, name: capitalizedName }
           : participant,
       ),
     }));

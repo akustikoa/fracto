@@ -5,6 +5,7 @@ import fractoMark from '../assets/branding/fracto-markround-chrome.png';
 import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { participantColors } from '../data/participantColors';
 import { createGroup } from '../lib/api/groups';
+import { capitalizeFirstLetter } from '../lib/text.utils';
 import { useLanguage } from '../context/useLanguage';
 import LanguageSelector from '../components/layout/LanguageSelector';
 
@@ -21,7 +22,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
 
   function handleParticipantChange(index, value) {
     const updatedParticipants = [...participants];
-    updatedParticipants[index] = value;
+    updatedParticipants[index] = capitalizeFirstLetter(value);
     setParticipants(updatedParticipants);
 
     if (participantErrors[index]) {
@@ -32,7 +33,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
   }
 
   function handleGroupNameChange(value) {
-    setGroupName(value);
+    setGroupName(capitalizeFirstLetter(value));
 
     if (groupNameError) {
       setGroupNameError(false);
