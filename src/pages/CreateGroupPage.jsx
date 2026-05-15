@@ -131,8 +131,14 @@ export default function CreateGroupPage({ onCreateGroup }) {
                 className='h-12 w-auto shrink-0 object-contain'
               />
             </h1>
-            <p className=' mb-4 text-center text-zinc-500'>{t('groupIntro')}</p>
+            <p className='text-center text-base font-medium text-zinc-700'>
+              {t('groupIntro')}
+            </p>
           </div>
+
+          <p className='ms-3 mb-1 mt-10 text-left text-xs opacity-80 leading-snug text-zinc-400'>
+            {t('groupIntroSecondary')}
+          </p>
 
           <form
             onSubmit={handleSubmit}
