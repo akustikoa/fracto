@@ -78,7 +78,7 @@ export default function SharePage() {
 
   if (isNotFound) {
     return (
-      <main className='min-h-screen bg-zinc-50'>
+      <main className='bg-zinc-50'>
         <header className='border-b border-zinc-200/50 bg-[#DA3C20]'>
           <div className='mx-auto flex h-16 max-w-3xl items-center justify-between px-4 md:px-6'>
             <img
@@ -193,7 +193,7 @@ export default function SharePage() {
   };
 
   return (
-    <main className='min-h-screen bg-zinc-50'>
+    <main className='bg-zinc-50'>
       <header className='border-b border-zinc-200/50 bg-[#DA3C20]'>
         <div className='mx-auto flex h-16 max-w-3xl items-center justify-between px-4 md:px-6'>
           <img

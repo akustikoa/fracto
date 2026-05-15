@@ -67,7 +67,7 @@ export default function DetailsPage() {
 
   if (isNotFound) {
     return (
-      <main className='min-h-screen bg-zinc-50'>
+      <main className='bg-zinc-50'>
         <header className='border-b border-zinc-200/50 bg-[#DA3C20]'>
           <div className='mx-auto flex h-16 max-w-3xl items-center justify-between px-4 md:px-6'>
             <img
@@ -178,7 +178,7 @@ export default function DetailsPage() {
   };
 
   return (
-    <main className=' min-h-screen bg-zinc-50'>
+    <main className='bg-zinc-50'>
       <AppHeader groupId={id} variant='details' />
 
       <div className='mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-8'>

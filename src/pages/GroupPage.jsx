@@ -356,7 +356,7 @@ export default function GroupPage() {
     draftGroup.participants.every((participant) => participant.name.trim());
 
   return (
-    <main className='min-h-screen bg-zinc-50'>
+    <main className='bg-zinc-50'>
       <AppHeader groupId={group.id} variant='group' />
 
       <div className='mx-auto max-w-3xl px-4 py-5 md:px-6 md:py-6'>
