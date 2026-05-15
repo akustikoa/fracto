@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RotateCcw, Trash2 } from 'lucide-react';
 import fractoMark from '../assets/branding/fracto-markround-chrome.png';
+import fractoLogoTxtBlack from '../assets/branding/fracto-logo-orange-chrome-TxtBlack.png';
 import fractoLogo from '../assets/branding/fracto-logo-orange-chrome.png';
 import { participantColors } from '../data/participantColors';
 import { createGroup } from '../lib/api/groups';
@@ -120,10 +121,15 @@ export default function CreateGroupPage({ onCreateGroup }) {
             <img
               src={fractoMark}
               alt='Fracto'
-              className='h-18 w-18 mb-3 object-contain'
+              className='h-18 w-18 mb-1 object-contain'
             />
             <h1 className='mb-1 text-4xl font-semibold tracking-tight text-zinc-900 leading-tight'>
-              {t('createBalance')}
+              {/* {t('createBalance')} */}
+              <img
+                src={fractoLogoTxtBlack}
+                alt='Fracto'
+                className='h-12 w-auto shrink-0 object-contain'
+              />
             </h1>
             <p className=' mb-4 text-center text-zinc-500'>{t('groupIntro')}</p>
           </div>
@@ -146,7 +152,7 @@ export default function CreateGroupPage({ onCreateGroup }) {
                     ? t('groupNameRequired')
                     : t('barcelonaWeekend')
                 }
-                className={`h-11 w-full rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
+                className={`h-11 w-full rounded-xl border bg-zinc-50 px-3 text-base md:text-sm outline-none transition ${
                   groupNameError
                     ? 'border-red-300 text-red-600 placeholder-red-500 hover:border-red-300 focus:border-red-400'
                     : 'border-zinc-200/80 text-zinc-800 hover:border-zinc-200 focus:border-zinc-300'
@@ -179,9 +185,13 @@ export default function CreateGroupPage({ onCreateGroup }) {
                       placeholder={
                         participantErrors[index]
                           ? t('participantNameRequired')
-                          : `${t('name')} ${index + 1}`
+                          : index === 0
+                            ? 'Julie'
+                            : index === 1
+                              ? 'Xavier'
+                              : `${t('name')} ${index + 1}`
                       }
-                      className={`h-10 min-w-0 flex-1 rounded-xl border bg-zinc-50 px-3 text-sm outline-none transition ${
+                      className={`h-10 min-w-0 flex-1 rounded-xl border bg-zinc-50 px-3 text-base md:text-sm outline-none transition ${
                         participantErrors[index]
                           ? 'border-red-300 text-red-600 placeholder-red-500 focus:border-red-400'
                           : 'border-zinc-200/80 text-zinc-800 focus:border-zinc-300'
