@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { Check, Trash2, X } from 'lucide-react';
+import SuccessFeedback from '../SuccessFeedback';
 import { useLanguage } from '../../context/useLanguage';
 
 export default function EditGroupSheet({
@@ -16,6 +18,52 @@ export default function EditGroupSheet({
   maxParticipants = 10,
 }) {
   const { t } = useLanguage();
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const hideFeedbackTimeoutRef = useRef(null);
+  const closeSheetTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(hideFeedbackTimeoutRef.current);
+      clearTimeout(closeSheetTimeoutRef.current);
+    };
+  }, []);
+
+  function showSuccess(message, shouldClose = false) {
+    clearTimeout(hideFeedbackTimeoutRef.current);
+    clearTimeout(closeSheetTimeoutRef.current);
+    setSuccessMessage(message);
+
+    hideFeedbackTimeoutRef.current = setTimeout(() => {
+      setSuccessMessage('');
+    }, 1800);
+
+    if (shouldClose) {
+      closeSheetTimeoutRef.current = setTimeout(() => {
+        onCancel();
+      }, 1800);
+    }
+  }
+
+  async function handleSaveGroup() {
+    if (!canSaveDraftGroup || isSaving) {
+      return;
+    }
+
+    setIsSaving(true);
+    let didSave;
+
+    try {
+      didSave = await onSaveGroup();
+    } finally {
+      setIsSaving(false);
+    }
+
+    if (didSave) {
+      showSuccess(t('groupSaved'), true);
+    }
+  }
 
   return (
     <div className='space-y-6'>
@@ -107,11 +155,16 @@ export default function EditGroupSheet({
         </button>
       )}
 
+      <SuccessFeedback
+        show={Boolean(successMessage)}
+        message={successMessage}
+      />
+
       <div className='flex gap-2'>
         <button
           type='button'
-          onClick={onSaveGroup}
-          disabled={!canSaveDraftGroup}
+          onClick={handleSaveGroup}
+          disabled={!canSaveDraftGroup || isSaving}
           className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-100 hover:text-zinc-700 disabled:opacity-40'
         >
           {t('save')}

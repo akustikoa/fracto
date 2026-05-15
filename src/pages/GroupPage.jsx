@@ -75,6 +75,7 @@ export default function GroupPage() {
 
     setExpenses((previousExpenses) => [...previousExpenses, createdExpense]);
     await touchGroupActivity(id);
+    return true;
   }
 
   function handleResetRequest() {
@@ -239,7 +240,7 @@ export default function GroupPage() {
       updatedParticipants.length === 0 ||
       updatedParticipants.some((participant) => !participant.name)
     ) {
-      return;
+      return false;
     }
 
     const updatedGroup = await updateGroup({
@@ -250,7 +251,7 @@ export default function GroupPage() {
 
     setGroup(updatedGroup);
     await touchGroupActivity(updatedGroup.id);
-    handleCloseSheet();
+    return true;
   }
 
   function handleExpenseDraftConceptChange(expenseId, value) {
@@ -299,7 +300,7 @@ export default function GroupPage() {
     });
 
     if (hasInvalidExpense) {
-      return;
+      return false;
     }
 
     const normalizedExpenseById = new Map(
@@ -347,7 +348,7 @@ export default function GroupPage() {
     );
 
     await touchGroupActivity(id);
-    handleCloseSheet();
+    return true;
   }
 
   const canSaveDraftGroup =

@@ -1,4 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { Check, Trash2, X } from 'lucide-react';
+import SuccessFeedback from '../SuccessFeedback';
 import { useLanguage } from '../../context/useLanguage';
 
 export default function ParticipantSheet({
@@ -15,6 +17,50 @@ export default function ParticipantSheet({
   onCancel,
 }) {
   const { t } = useLanguage();
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const hideFeedbackTimeoutRef = useRef(null);
+  const closeSheetTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(hideFeedbackTimeoutRef.current);
+      clearTimeout(closeSheetTimeoutRef.current);
+    };
+  }, []);
+
+  async function handleSave() {
+    if (isSaving) {
+      return;
+    }
+
+    setShowSuccess(false);
+    clearTimeout(hideFeedbackTimeoutRef.current);
+    clearTimeout(closeSheetTimeoutRef.current);
+
+    setIsSaving(true);
+    let didSave;
+
+    try {
+      didSave = await onSave();
+    } finally {
+      setIsSaving(false);
+    }
+
+    if (!didSave) {
+      return;
+    }
+
+    setShowSuccess(true);
+
+    hideFeedbackTimeoutRef.current = setTimeout(() => {
+      setShowSuccess(false);
+    }, 1800);
+
+    closeSheetTimeoutRef.current = setTimeout(() => {
+      onCancel();
+    }, 1800);
+  }
 
   return (
     <div className='space-y-6'>
@@ -117,11 +163,17 @@ export default function ParticipantSheet({
         )}
       </div>
 
+      <SuccessFeedback
+        show={showSuccess}
+        message={t('expensesSaved')}
+      />
+
       <div className='flex gap-2'>
         <button
           type='button'
-          onClick={onSave}
-          className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-800'
+          onClick={handleSave}
+          disabled={isSaving}
+          className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-800 disabled:opacity-40'
         >
           {t('save')}
         </button>

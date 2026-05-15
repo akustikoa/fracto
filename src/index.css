@@ -1,1 +1,18 @@
 @import 'tailwindcss';
+
+@keyframes success-feedback-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 0.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.success-feedback-enter {
+  transform: translate(-50%, 0);
+  animation: success-feedback-enter 160ms ease-out;
+}

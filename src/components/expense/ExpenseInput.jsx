@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
+import SuccessFeedback from '../SuccessFeedback';
 import { useLanguage } from '../../context/useLanguage';
 import { capitalizeFirstLetter } from '../../lib/text.utils';
 
@@ -14,6 +15,15 @@ export default function ExpenseInput({
   const [paidBy, setPaidBy] = useState(participants[0]?.id ?? '');
   const [concept, setConcept] = useState('');
   const [amount, setAmount] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const hideFeedbackTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(hideFeedbackTimeoutRef.current);
+    };
+  }, []);
 
   const activePaidBy = participants.some(
     (participant) => participant.id === paidBy,
@@ -28,14 +38,23 @@ export default function ExpenseInput({
 
   function closeSheet() {
     setIsSheetOpen(false);
+    setShowSuccess(false);
+    clearTimeout(hideFeedbackTimeoutRef.current);
 
     window.setTimeout(() => {
       setIsRendered(false);
     }, 200);
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+
+    if (isAdding) {
+      return;
+    }
+
+    setShowSuccess(false);
+    clearTimeout(hideFeedbackTimeoutRef.current);
 
     const parsedAmount = parseFloat(amount);
 
@@ -58,10 +77,26 @@ export default function ExpenseInput({
       date: new Date().toISOString(),
     };
 
-    onAddExpense(newExpense);
+    setIsAdding(true);
+    let didAdd;
+
+    try {
+      didAdd = await onAddExpense(newExpense);
+    } finally {
+      setIsAdding(false);
+    }
+
+    if (didAdd === false) {
+      return;
+    }
 
     setConcept('');
     setAmount('');
+    setShowSuccess(true);
+
+    hideFeedbackTimeoutRef.current = setTimeout(() => {
+      setShowSuccess(false);
+    }, 1800);
   }
 
   const triggerClassName =
@@ -181,10 +216,16 @@ export default function ExpenseInput({
                 />
               </div>
 
+              <SuccessFeedback
+                show={showSuccess}
+                message={t('expenseAdded')}
+              />
+
               <div className='flex gap-2'>
                 <button
                   type='submit'
-                  className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-100 hover:text-zinc-700'
+                  disabled={isAdding}
+                  className='h-10 flex-1 rounded-xl bg-zinc-900 px-4 text-sm font-medium shadow-sm text-white transition hover:bg-zinc-100 hover:text-zinc-700 disabled:opacity-40'
                 >
                   {t('add')}
                 </button>
