@@ -209,7 +209,7 @@ export const translations = {
     expenseAdded: 'Dépense ajoutée',
     expensesByParticipant: 'Dépenses par participant',
     expensesSaved: 'Dépenses enregistrées',
-    groupIntro: 'Partagez les dépenses en quelques secondes',
+    groupIntro: 'Partagez vos dépenses en quelques secondes',
     groupIntroSecondary: 'Pas de login. Pas d’app. Partagez le lien.',
     groupSaved: 'Groupe enregistré',
     groupNameRequired: 'Nom du groupe requis',
