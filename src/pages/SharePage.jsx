@@ -276,8 +276,8 @@ export default function SharePage() {
       </div>
 
       <div
-        className='pointer-events-none fixed inset-0 flex items-center justify-center'
-        style={{ zIndex: -1 }}
+        className='pointer-events-none fixed left-0 top-0 flex items-center justify-center opacity-0'
+        style={{ transform: 'translateX(-9999px)' }}
       >
         <ShareCard
           shareRef={shareCardRef}
